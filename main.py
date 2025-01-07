@@ -1,38 +1,42 @@
 import pygame
 import sys
 
+# Инициализация Pygame
+pygame.init()
 
-def main():
-    pygame.init()
-    pygame.display.set_caption('Дота 2')
-    size = 800, 600
-    screen = pygame.display.set_mode(size)
-    draw(screen)
-    while pygame.event.wait().type != pygame.QUIT:
-        pygame.display.flip()
-    pygame.quit()
+# Настройки экрана
+WIDTH, HEIGHT = 800, 600
+screen = pygame.display.set_mode((WIDTH, HEIGHT))
+pygame.display.set_caption("Echo's Journey")
 
+# Цвета
+WHITE = (255, 255, 255)
+BLACK = (0, 0, 0)
 
-def draw(screen):
-    width, height = screen.get_size()
-    screen.fill((0, 0, 0))
+# Игрок
+player_pos = [100, 500]
+player_size = 50
+player_speed = 5
 
-    font_size = 36
-    font_path = "Neuropol.ttf"
-    font = pygame.font.Font(font_path, font_size)
-    text_color = (255, 0, 207)
+# Главный игровой цикл
+while True:
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            pygame.quit()
+            sys.exit()
 
-    text = font.render("А ТЫ СИГМА???",True, text_color)
+    keys = pygame.key.get_pressed()
+    if keys[pygame.K_LEFT]:
+        player_pos[0] -= player_speed
+    if keys[pygame.K_RIGHT]:
+        player_pos[0] += player_speed
+    # if keys[pygame.K_UP]:
+    #     player_pos[1] -= player_speed
+    # if keys[pygame.K_DOWN]:
+    #     player_pos[1] += player_speed
 
-    text_x = width // 2 - text.get_width() // 2
-    text_y = height // 2 - text.get_height() // 2
-    text_w = text.get_width()
-    text_h = text.get_height()
-
-    screen.blit(text, (text_x, text_y))
-    pygame.draw.rect(screen, (0, 255, 0), (text_x - 10, text_y - 10,
-                                           text_w + 20, text_h + 20), 1)
-
-
-if __name__ == '__main__':
-    sys.exit(main())
+    # Обновление экрана
+    screen.fill(WHITE)
+    pygame.draw.rect(screen, BLACK, (*player_pos, player_size, player_size))
+    pygame.display.flip()
+    pygame.time.Clock().tick(30)
