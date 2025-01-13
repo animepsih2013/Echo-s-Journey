@@ -21,11 +21,11 @@ import pygame
 pygame.init()
 
 # Загрузка изображения фона
-background_image = pygame.image.load("data/font.png")
+background_image = pygame.image.load("textures/font.png")
 
 
 # Игрок
-player_pos = [100, 500]
+player_pos = [100, 965]
 player_size = 50
 player_speed = 7
 is_jumping = False  # Состояние персонажа. False - в покое, True - в прыжке
@@ -68,7 +68,7 @@ while True:
 
     # Отображение изображения на экране
     screen.blit(background_image, (0, 0))  # Рисуем фон
-
+    # screen.fill((255, 255, 255))
     # Рисуем игрока поверх фона
     pygame.draw.rect(screen, (0, 0, 0), (*player_pos, player_size, player_size))  # Рисуем игрока
 
