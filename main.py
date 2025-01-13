@@ -27,11 +27,11 @@ background_image = pygame.image.load("data/font.png")
 # Игрок
 player_pos = [100, 500]
 player_size = 50
-player_speed = 5
-is_jumping = False # Состояние персонажа. False - в покое, True - в прыжке
-jump_height = 10 # Максимальная высота прыжка
-gravity = 0.5 # Сила тяжести
-y_velocity = jump_height # Начальная вертикальная скорость
+player_speed = 7
+is_jumping = False  # Состояние персонажа. False - в покое, True - в прыжке
+jump_height = 10  # Максимальная высота прыжка
+gravity = 0.5  # Сила тяжести
+y_velocity = jump_height  # Начальная вертикальная скорость
 
 # Главный игровой цикл
 while True:
