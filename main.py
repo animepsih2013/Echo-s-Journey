@@ -1,21 +1,28 @@
 import pygame
 import sys
 
+from pygame import FULLSCREEN
+
 # Инициализация Pygame
 pygame.init()
 
 # Настройки экрана
 WIDTH, HEIGHT = 800, 600
-screen = pygame.display.set_mode((WIDTH, HEIGHT))
+screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
 pygame.display.set_caption("Echo's Journey")
 
 # Цвета
 WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
 
-tree_texture = pygame.image.load('data/tree.png')
-tree_rect = tree_texture.get_rect()  # Получаем прямоугольник текстуры
-tree_rect.topleft = (200, 400)  # Устанавливаем позицию дерева на карте
+import pygame
+
+# Инициализация Pygame
+pygame.init()
+
+# Загрузка изображения фона
+background_image = pygame.image.load("data/font.png")
+
 
 # Игрок
 player_pos = [100, 500]
@@ -59,12 +66,12 @@ while True:
             player_pos[1] = 500  # Приземляем персонажа на землю
             is_jumping = False  # Завершаем прыжок
 
-    # Обновление экрана
-    screen.fill((255, 255, 255))  # Заполняем экран белым цветом
+    # Отображение изображения на экране
+    screen.blit(background_image, (0, 0))  # Рисуем фон
+
+    # Рисуем игрока поверх фона
     pygame.draw.rect(screen, (0, 0, 0), (*player_pos, player_size, player_size))  # Рисуем игрока
 
-    # Отрисовка текстуры дерева
-    screen.blit(tree_texture, tree_rect)  # Рисуем текстуру дерева на экране
 
     pygame.display.flip()
     pygame.time.Clock().tick(30)
