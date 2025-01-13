@@ -1,6 +1,9 @@
 import pygame
+import sys
 
+# Инициализация Pygame
 pygame.init()
+
 # Получение текущего разрешения экрана
 info = pygame.display.Info()
 screen_width, screen_height = info.current_w, info.current_h
@@ -10,121 +13,98 @@ screen = pygame.display.set_mode((screen_width, screen_height), pygame.FULLSCREE
 pygame.display.set_caption("Echo's Journey")
 
 # Загрузка изображения фона
-background_image = pygame.image.load("textures/font.png")
+background_image = pygame.image.load("textures/forest_background.png")
 background_image = pygame.transform.scale(background_image, (screen_width, screen_height))  # Масштабируем фон под экран
 
-# Настройки земли
-ground_y = screen_height - 65  # Короче координата земли, переделай так чтоб вместо координат границей была текстурка
+# Загрузка текстуры травы
+grass_image = pygame.image.load("textures/grass.png")
+grass_image = pygame.transform.scale(grass_image, (200, 90))  # Масштабируем текстуру травы под размер платформы
 
-# Игрок
-# player_size = 50
-# player_pos = [100, ground_y - player_size]  # Позиция игрока поверх земли
-# player_speed = 7
+# Глобальные параметры
+player_speed = 7
+jump_height = 15
+gravity = 1
 
-# Прыжок
-is_jumping = False
-jump_height = 10
-gravity = 0.5
-y_velocity = jump_height
-
-clock = pygame.time.Clock()
-
-
+# Спрайт платформы
 class Platform(pygame.sprite.Sprite):
-    size = (100, 10)
-
-    def __init__(self, pos):
-        # НЕОБХОДИМО вызвать конструктор родительского класса Sprite
-        super().__init__(all_sprites)
-        # добавляем в группу платформ
-        self.add(platforms)
-        self.image = pygame.Surface(Platform.size)
-        self.image.fill(pygame.Color("gray"))
-        self.rect = (pos, Platform.size)
+    def __init__(self, pos, size, texture=None):
+        super().__init__(platforms, all_sprites)
+        if texture:
+            self.image = pygame.transform.scale(texture, size)
+        else:
+            self.image = pygame.Surface(size)
+            self.image.fill(pygame.Color("gray"))
+        self.rect = pygame.Rect(pos, size)
 
 
-class Ladder(pygame.sprite.Sprite):
-    size = (10, 100)
-
-    def __init__(self, pos):
-        # НЕОБХОДИМО вызвать конструктор родительского класса Sprite
-        super().__init__(all_sprites)
-        # добавляем в группу платформ
-        self.add(ladders)
-        self.image = pygame.Surface(Ladder.size)
-        self.image.fill(pygame.Color("red"))
-        self.rect = (pos, Ladder.size)
-
-
+# Спрайт персонажа
 class Hero(pygame.sprite.Sprite):
     def __init__(self, pos):
-        # НЕОБХОДИМО вызвать конструктор родительского класса Sprite
         super().__init__(all_sprites)
-        self.image = pygame.Surface((20, 20))
+        self.image = pygame.Surface((50, 50))
         self.image.fill(pygame.Color("blue"))
-        self.rect = pygame.Rect(pos, (20, 20))
+        self.rect = self.image.get_rect(topleft=pos)
+        self.y_velocity = 0
+        self.is_jumping = False
 
     def update(self):
-        if pygame.sprite.spritecollideany(self, platforms) is None and pygame.sprite.spritecollideany(self,
-                                                                                                      ladders) is None:
-            self.rect.top += 1
+        keys = pygame.key.get_pressed()
+
+        # Горизонтальное движение
+        if keys[pygame.K_a]:
+            self.rect.x -= player_speed
+        if keys[pygame.K_d]:
+            self.rect.x += player_speed
+
+        # Прыжок
+        if not self.is_jumping and keys[pygame.K_SPACE]:
+            self.is_jumping = True
+            self.y_velocity = -jump_height
+
+        # Применение гравитации
+        self.y_velocity += gravity
+        self.rect.y += self.y_velocity
+
+        # Проверка на платформы
+        if pygame.sprite.spritecollideany(self, platforms):
+            self.rect.y -= self.y_velocity  # Отмена падения
+            self.y_velocity = 0
+            self.is_jumping = False
+
+        # Ограничение движения по вертикали (не падаем ниже экрана)
+        if self.rect.bottom > screen_height:
+            self.rect.bottom = screen_height
+            self.is_jumping = False
+            self.y_velocity = 0
 
 
-# группа, содержащая все спрайты
+# Группы спрайтов
 all_sprites = pygame.sprite.Group()
-
-# группа, содержащая все платформы
 platforms = pygame.sprite.Group()
+grass_sprite = pygame.sprite.Group()
 
-# группа, содержащая все лесенки
-ladders = pygame.sprite.Group()
+# Создаём платформы и траву
+Platform((100, screen_height - 100), (300, 20))  # Серая платформа
+Platform((500, screen_height - 200), (200, 20))  # Серая платформа
+Platform((800, screen_height - 300), (300, 20))  # Серая платформа
 
-hero = None
+
+
+# Главный игровой цикл
+clock = pygame.time.Clock()
 running = True
 while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
-            running = False
-        if event.type == pygame.MOUSEBUTTONDOWN:
-            if event.button == 1:
-                if pygame.key.get_mods() & pygame.KMOD_CTRL:
-                    Ladder(event.pos)
-                else:
-                    Platform(event.pos)
-            if event.button == 3:
-                if hero is None:
-                    hero = Hero(event.pos)
-                else:
-                    hero.rect.topleft = event.pos
-                    # если персонаж создан
-        if hero is not None:
-            if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_a:
-                    hero.rect.left -= 10
-                if event.key == pygame.K_d:
-                    hero.rect.left += 10
-                if pygame.sprite.spritecollideany(hero, ladders) is not None:
-                    if event.key == pygame.K_w:
-                        hero.rect.top -= 10
-                    if event.key == pygame.K_s:
-                        hero.rect.bottom += 10
-                if not is_jumping:
-                    if event.key == pygame.K_SPACE:
-                        is_jumping = True
-                        y_velocity = jump_height  # Начальная скорость прыжка
-                else:
-                    # Обработка прыжка
-                    hero.rect.top -= y_velocity
-                    y_velocity -= gravity
+            pygame.quit()
+            sys.exit()
 
-                    # Проверка на приземление
-                    if hero.rect.bottom >= ground_y - hero.rect.size[1]:
-                        hero.rect.bottom = ground_y - hero.rect.size[1]
-                        is_jumping = False
+    # Отображение изображения на экране
+    screen.blit(background_image, (0, 0))  # Рисуем фон
 
-        # Отображение изображения на экране
-        screen.blit(background_image, (0, 0))  # Рисуем фон
-        all_sprites.draw(screen)
-        all_sprites.update()
-        pygame.display.flip()
-        pygame.time.Clock().tick(120)
+    # Обновляем и рисуем все спрайты
+    all_sprites.update()
+    all_sprites.draw(screen)
+
+    pygame.display.flip()
+    clock.tick(60)
