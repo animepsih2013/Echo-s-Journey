@@ -1,37 +1,34 @@
 import pygame
 import sys
 
-from pygame import FULLSCREEN
-
 # Инициализация Pygame
 pygame.init()
 
-# Настройки экрана
-WIDTH, HEIGHT = 800, 600
-screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
+# Получение текущего разрешения экрана
+info = pygame.display.Info()
+screen_width, screen_height = info.current_w, info.current_h
+
+# Создание полноэкранного окна
+screen = pygame.display.set_mode((screen_width, screen_height), pygame.FULLSCREEN)
 pygame.display.set_caption("Echo's Journey")
-
-# Цвета
-WHITE = (255, 255, 255)
-BLACK = (0, 0, 0)
-
-import pygame
-
-# Инициализация Pygame
-pygame.init()
 
 # Загрузка изображения фона
 background_image = pygame.image.load("textures/font.png")
+background_image = pygame.transform.scale(background_image, (screen_width, screen_height))  # Масштабируем фон под экран
 
+# Настройки земли
+ground_y = screen_height - 65  # Короче координата земли, переделай так чтоб вместо координат границей была текстурка
 
 # Игрок
-player_pos = [100, 965]
 player_size = 50
+player_pos = [100, ground_y - player_size]  # Позиция игрока поверх земли
 player_speed = 7
-is_jumping = False  # Состояние персонажа. False - в покое, True - в прыжке
-jump_height = 10  # Максимальная высота прыжка
-gravity = 0.5  # Сила тяжести
-y_velocity = jump_height  # Начальная вертикальная скорость
+
+# Прыжок
+is_jumping = False
+jump_height = 10
+gravity = 0.5
+y_velocity = jump_height
 
 # Главный игровой цикл
 while True:
@@ -43,13 +40,9 @@ while True:
     # Основные механики передвижения
     keys = pygame.key.get_pressed()
     if keys[pygame.K_a]:
-        player_pos[0] -= player_speed
+        player_pos[0] = max(player_pos[0] - player_speed, 0)  # Ограничение по левому краю
     if keys[pygame.K_d]:
-        player_pos[0] += player_speed
-    # if keys[pygame.K_UP]:
-    #     player_pos[1] -= player_speed
-    # if keys[pygame.K_DOWN]:
-    #     player_pos[1] += player_speed
+        player_pos[0] = min(player_pos[0] + player_speed, screen_width - player_size)  # Ограничение по правому краю
 
     # Прыжок
     if not is_jumping:
@@ -59,19 +52,19 @@ while True:
     else:
         # Обработка прыжка
         player_pos[1] -= y_velocity
-        y_velocity -= gravity  # Применение силы тяжести
+        y_velocity -= gravity
 
         # Проверка на приземление
-        if player_pos[1] >= 500:  # Предполагаемая высота земли
-            player_pos[1] = 500  # Приземляем персонажа на землю
-            is_jumping = False  # Завершаем прыжок
+        if player_pos[1] >= ground_y - player_size:
+            player_pos[1] = ground_y - player_size
+            is_jumping = False
 
     # Отображение изображения на экране
     screen.blit(background_image, (0, 0))  # Рисуем фон
-    # screen.fill((255, 255, 255))
+
     # Рисуем игрока поверх фона
-    pygame.draw.rect(screen, (0, 0, 0), (*player_pos, player_size, player_size))  # Рисуем игрока
+    pygame.draw.rect(screen, (0, 0, 0), (*player_pos, player_size, player_size))  # Черный квадрат
 
-
+    # Обновляем экран
     pygame.display.flip()
     pygame.time.Clock().tick(30)
