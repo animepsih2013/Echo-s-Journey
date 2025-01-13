@@ -1,7 +1,31 @@
 import pygame
 
-size = width, height = 500, 500
-screen = pygame.display.set_mode(size)
+pygame.init()
+# Получение текущего разрешения экрана
+info = pygame.display.Info()
+screen_width, screen_height = info.current_w, info.current_h
+
+# Создание полноэкранного окна
+screen = pygame.display.set_mode((screen_width, screen_height), pygame.FULLSCREEN)
+pygame.display.set_caption("Echo's Journey")
+
+# Загрузка изображения фона
+background_image = pygame.image.load("textures/font.png")
+background_image = pygame.transform.scale(background_image, (screen_width, screen_height))  # Масштабируем фон под экран
+
+# Настройки земли
+ground_y = screen_height - 65  # Короче координата земли, переделай так чтоб вместо координат границей была текстурка
+
+# Игрок
+# player_size = 50
+# player_pos = [100, ground_y - player_size]  # Позиция игрока поверх земли
+# player_speed = 7
+
+# Прыжок
+is_jumping = False
+jump_height = 10
+gravity = 0.5
+y_velocity = jump_height
 
 clock = pygame.time.Clock()
 
@@ -56,7 +80,6 @@ platforms = pygame.sprite.Group()
 ladders = pygame.sprite.Group()
 
 hero = None
-
 running = True
 while running:
     for event in pygame.event.get():
@@ -76,20 +99,32 @@ while running:
                     # если персонаж создан
         if hero is not None:
             if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_LEFT:
+                if event.key == pygame.K_a:
                     hero.rect.left -= 10
-                if event.key == pygame.K_RIGHT:
+                if event.key == pygame.K_d:
                     hero.rect.left += 10
                 if pygame.sprite.spritecollideany(hero, ladders) is not None:
-                    if event.key == pygame.K_UP:
+                    if event.key == pygame.K_w:
                         hero.rect.top -= 10
-                    if event.key == pygame.K_DOWN:
+                    if event.key == pygame.K_s:
                         hero.rect.bottom += 10
+                if not is_jumping:
+                    if event.key == pygame.K_SPACE:
+                        is_jumping = True
+                        y_velocity = jump_height  # Начальная скорость прыжка
+                else:
+                    # Обработка прыжка
+                    hero.rect.top -= y_velocity
+                    y_velocity -= gravity
 
-    screen.fill(pygame.Color(0, 0, 0))
-    all_sprites.draw(screen)
-    all_sprites.update()
-    pygame.display.flip()
-    clock.tick(50)
+                    # Проверка на приземление
+                    if hero.rect.bottom >= ground_y - hero.rect.size[1]:
+                        hero.rect.bottom = ground_y - hero.rect.size[1]
+                        is_jumping = False
 
-pygame.quit()
+        # Отображение изображения на экране
+        screen.blit(background_image, (0, 0))  # Рисуем фон
+        all_sprites.draw(screen)
+        all_sprites.update()
+        pygame.display.flip()
+        pygame.time.Clock().tick(120)
