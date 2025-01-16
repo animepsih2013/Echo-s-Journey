@@ -1,5 +1,6 @@
 import pygame
 import sys
+import random
 
 # Инициализация Pygame
 pygame.init()
@@ -33,6 +34,34 @@ class Grass(pygame.sprite.Sprite):
         self.image = pygame.transform.scale(texture, (screen_width, texture.get_height()))
         self.rect = self.image.get_rect(topleft=pos)
 
+
+class Wolf(pygame.sprite.Sprite):
+    def __init__(self, pos):
+        super().__init__(all_sprites)
+        self.image = pygame.Surface((50, 50))
+        self.image.fill(pygame.Color("red"))
+        self.rect = self.image.get_rect(topleft=pos)
+        self.vx = random.randint(1, 5)
+        self.vy = random.randrange(0, 3)
+        self.y_velocity = 0
+
+    def update(self):
+        self.rect = self.rect.move(self.vx, self.vy)
+        collision = pygame.sprite.spritecollideany(self, platforms)
+        if collision:
+            # Если герой падает вниз и касается платформы
+            if self.y_velocity > 0 and self.rect.bottom <= collision.rect.bottom:
+                self.rect.bottom = collision.rect.top  # Останавливаем персонажа на платформе
+                self.y_velocity = 0
+                self.is_jumping = False
+
+        # Ограничение движения по вертикали (не падаем ниже экрана)
+        if self.rect.bottom > screen_height:
+            self.rect.bottom = screen_height
+            self.is_jumping = False
+            self.y_velocity = 0
+
+
 class Platform(pygame.sprite.Sprite):
     def __init__(self, pos, size, texture=None):
         super().__init__(platforms, all_sprites)
@@ -40,8 +69,9 @@ class Platform(pygame.sprite.Sprite):
             self.image = pygame.transform.scale(texture, size)
         else:
             self.image = pygame.Surface(size)
-            self.image.fill(pygame.Color("gray"))
+            self.image.fill(pygame.Color("grey"))
         self.rect = pygame.Rect(pos, size)
+
 
 # Класс персонажа
 class Hero(pygame.sprite.Sprite):
@@ -91,6 +121,7 @@ class Hero(pygame.sprite.Sprite):
 all_sprites = pygame.sprite.Group()
 platforms = pygame.sprite.Group()
 
+
 Platform((100, screen_height - 100), (300, 20))  # Серая платформа
 Platform((500, screen_height - 200), (200, 20))  # Серая платформа
 Platform((800, screen_height - 300), (300, 20))  # Серая платформа
@@ -98,6 +129,7 @@ Platform((800, screen_height - 300), (300, 20))  # Серая платформа
 # Создаём травяной слой внизу окна
 grass = Grass((0, screen_height - grass_height), grass_image)
 
+wolf = Wolf((150, screen_height - grass_height - 50))
 # Создаём героя
 hero = Hero((150, screen_height - grass_height - 50))
 
