@@ -120,9 +120,9 @@ all_sprites = pygame.sprite.Group()
 platforms = pygame.sprite.Group()
 
 
-Platform((100, screen_height - 100), (300, 20))  # Серая платформа
-Platform((500, screen_height - 200), (200, 20))  # Серая платформа
-Platform((800, screen_height - 300), (300, 20))  # Серая платформа
+Platform((300, screen_height - 100), (300, 20))  # Серая платформа
+Platform((700, screen_height - 200), (200, 20))  # Серая платформа
+Platform((1000, screen_height - 300), (300, 20))  # Серая платформа
 
 # Создаём травяной слой внизу окна
 grass = Grass((0, screen_height - grass_height), grass_image)
