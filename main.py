@@ -41,7 +41,7 @@ class Wolf(pygame.sprite.Sprite):
         self.image = pygame.Surface((50, 50))
         self.image.fill(pygame.Color("red"))
         self.rect = self.image.get_rect(topleft=pos)
-        self.vx = random.randint(4, 5)
+        self.vx = -random.randint(4, 5)
         self.vy = random.randrange(3, 8)
         self.y_velocity = 0
 
@@ -127,7 +127,7 @@ Platform((1000, screen_height - 300), (300, 20))  # Серая платформ�
 # Создаём травяной слой внизу окна
 grass = Grass((0, screen_height - grass_height), grass_image)
 
-wolf = Wolf((150, screen_height - grass_height - 50))
+wolf = Wolf((screen_width, screen_height - grass_height - 50))
 # Создаём героя
 hero = Hero((150, screen_height - grass_height - 50))
 
