@@ -85,6 +85,17 @@ class Platform(pygame.sprite.Sprite):
             self.image.fill(pygame.Color('gray'))
         self.rect = self.image.get_rect(topleft=(x, y))
 
+class Platform_ver(pygame.sprite.Sprite):
+    def __init__(self, x, y, width, height, texture=None):
+        super().__init__()
+        if texture:  # Если текстура задана
+            self.image = pygame.image.load(texture).convert_alpha()
+            self.image = pygame.transform.scale(self.image, (width, height))  # Масштабируем платформу
+        else:  # Если текстура не задана, используем стандартное заполнение цветом
+            self.image = pygame.Surface((width, height))
+            self.image.fill(pygame.Color('red'))
+        self.rect = self.image.get_rect(topleft=(x, y))
+
 
 # Класс персонажа
 class Hero(pygame.sprite.Sprite):
@@ -151,10 +162,13 @@ all_platforms = {}
 # Словарь для размеров платформ
 platform_sizes = {
     's': (0.1, 0.02),  # Маленькая платформа (длинна платформы, толщина платформы)
-    'm': (0.2, 0.02),  # Средняя платформа (длинна платформы, толщина платформы)
+    'm': (0.2, 0.021),  # Средняя платформа (длинна платформы, толщина платформы)
     'b': (0.3, 0.02),  # Большая платформа (длинна платформы, толщина платформы)
 }
 
+ver_platform_sizes = {
+    'v': (0.2, 0.02),  # Маленькая платформа (длинна платформы, толщина платформы)
+}
 
 def load_map_from_file(filename):
     try:
@@ -164,9 +178,7 @@ def load_map_from_file(filename):
             # Определяем размеры одной ячейки карты в пикселях
             cell_width = screen_width / len(map_data[0])  # Ширина одной ячейки
 
-            # Контролируемое расстояние между строками (в пикселях)
-            vertical_spacing = 0.9
-
+            vertical_spacing = -0.01
             platform_count = 0  # Счетчик для уникальных имен платформ
 
             for y, row in enumerate(map_data):
@@ -185,6 +197,26 @@ def load_map_from_file(filename):
                         platform = Platform(world_x, world_y, platform_width, platform_height)
                         platforms_sprites.add(platform)
                         all_sprites.add(platform)
+
+                        # Генерируем уникальное имя для платформы
+                        platform_type = cell
+                        platform_name = f"{platform_type}_platform_{platform_count}"
+                        platform_count += 1
+
+                        # Добавляем платформу в словарь с её координатами
+                        all_platforms[platform_name] = (world_x, world_y)
+
+                    if cell in ver_platform_sizes:
+                        width_percent, height_percent = ver_platform_sizes[cell]
+                        platform_width = int(screen_width * width_percent)
+                        platform_height = int(screen_height * height_percent)
+
+                        # Добавляем контролируемый отступ между строками
+                        world_y = y * (platform_height + vertical_spacing)
+
+                        ver_platform = Platform_ver(world_x, world_y, platform_height, platform_width)
+                        platforms_sprites.add(ver_platform)
+                        all_sprites.add(ver_platform)
 
                         # Генерируем уникальное имя для платформы
                         platform_type = cell
