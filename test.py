@@ -11,7 +11,7 @@ screen_width, screen_height = info.current_w, info.current_h
 
 # Группы спрайтов
 all_sprites = pygame.sprite.Group()
-platforms = pygame.sprite.Group()
+platforms_sprites = pygame.sprite.Group()
 
 # Создание полноэкранного окна
 screen = pygame.display.set_mode((screen_width, screen_height), pygame.FULLSCREEN)
@@ -30,12 +30,15 @@ player_speed = 7
 jump_height = 20
 gravity = 1
 
+
 # Класс травы (нижней платформы)
 class Grass(pygame.sprite.Sprite):
     def __init__(self, pos, texture):
-        super().__init__(platforms, all_sprites)
-        self.image = pygame.transform.scale(texture, (screen_width, texture.get_height()))  # Масштабируем траву по ширине экрана
+        super().__init__(platforms_sprites, all_sprites)
+        self.image = pygame.transform.scale(texture,
+                                            (screen_width, texture.get_height()))  # Масштабируем траву по ширине экрана
         self.rect = self.image.get_rect(topleft=pos)
+
 
 class Wolf(pygame.sprite.Sprite):
     def __init__(self, pos):
@@ -49,7 +52,7 @@ class Wolf(pygame.sprite.Sprite):
 
     def update(self):
         self.rect = self.rect.move(self.vx, self.vy)
-        collision = pygame.sprite.spritecollideany(self, platforms)
+        collision = pygame.sprite.spritecollideany(self, platforms_sprites)
         if collision:
             # Если герой падает вниз и касается платформы
             if self.rect.bottom <= collision.rect.bottom:
@@ -65,9 +68,10 @@ class Wolf(pygame.sprite.Sprite):
 # Класс травы (нижней платформы)
 class Grass(pygame.sprite.Sprite):
     def __init__(self, pos, texture):
-        super().__init__(platforms, all_sprites)
+        super().__init__(platforms_sprites, all_sprites)
         self.image = pygame.transform.scale(texture, (screen_width, texture.get_height()))
         self.rect = self.image.get_rect(topleft=pos)
+
 
 # Класс платформы
 class Platform(pygame.sprite.Sprite):
@@ -122,8 +126,8 @@ class Hero(pygame.sprite.Sprite):
 
     def handle_collision_x(self):
         # Проверяем столкновения по оси X
-        collided_platforms = pygame.sprite.spritecollide(self, platforms, False)
-        for platform in collided_platforms:
+        collided_platforms_sprites = pygame.sprite.spritecollide(self, platforms_sprites, False)
+        for platform in collided_platforms_sprites:
             if self.velocity_x > 0:  # Движение вправо
                 self.rect.right = platform.rect.left
             elif self.velocity_x < 0:  # Движение влево
@@ -131,8 +135,8 @@ class Hero(pygame.sprite.Sprite):
 
     def handle_collision_y(self):
         # Проверяем столкновения по оси Y
-        collided_platforms = pygame.sprite.spritecollide(self, platforms, False)
-        for platform in collided_platforms:
+        collided_platforms_sprites = pygame.sprite.spritecollide(self, platforms_sprites, False)
+        for platform in collided_platforms_sprites:
             if self.velocity_y > 0:  # Падение вниз
                 self.rect.bottom = platform.rect.top
                 self.velocity_y = 0
@@ -142,43 +146,56 @@ class Hero(pygame.sprite.Sprite):
                 self.velocity_y = 0
 
 
+all_platforms = {}
+
 # Словарь для размеров платформ
 platform_sizes = {
-    '1': (0.1, 0.015),  # Маленькая платформа (10% ширины экрана, 2% высоты экрана)
-    '2': (0.2, 0.025),  # Средняя платформа (20% ширины экрана, 5% высоты экрана)
-    '3': (0.3, 0.035),  # Большая платформа (30% ширины экрана, 7% высоты экрана)
+    's': (0.1, 0.02),  # Маленькая платформа (длинна платформы, толщина платформы)
+    'm': (0.2, 0.02),  # Средняя платформа (длинна платформы, толщина платформы)
+    'b': (0.3, 0.02),  # Большая платформа (длинна платформы, толщина платформы)
 }
 
-# Загрузка карты и инициализация объектов с учетом точек
-def load_map_from_file(filename, air_size=(0, 0)):
+
+def load_map_from_file(filename):
     try:
         with open(filename, 'r') as file:
             map_data = [line.strip() for line in file]
 
-            # Распаковываем размеры пустоты (air_size)
-            air_width_percent, air_height_percent = air_size
-            global player
+            # Определяем размеры одной ячейки карты в пикселях
+            cell_width = screen_width / len(map_data[0])  # Ширина одной ячейки
+
+            # Контролируемое расстояние между строками (в пикселях)
+            vertical_spacing = 0.9
+
+            platform_count = 0  # Счетчик для уникальных имен платформ
+
             for y, row in enumerate(map_data):
                 for x, cell in enumerate(row):
-                    # Масштабируем координаты с учетом размера экрана и промежутков
-                    world_x = int(x * (screen_width / len(row)) + air_width_percent * screen_width)
-                    world_y = int(y * (screen_height / len(map_data)) + air_height_percent * screen_height)
+                    # Вычисляем координаты верхнего левого угла ячейки
+                    world_x = x * cell_width
 
-                    # Создаем объекты карты
                     if cell in platform_sizes:
                         width_percent, height_percent = platform_sizes[cell]
                         platform_width = int(screen_width * width_percent)
                         platform_height = int(screen_height * height_percent)
+
+                        # Добавляем контролируемый отступ между строками
+                        world_y = y * (platform_height + vertical_spacing)
+
                         platform = Platform(world_x, world_y, platform_width, platform_height)
-                        platforms.add(platform)
+                        platforms_sprites.add(platform)
                         all_sprites.add(platform)
 
+                        # Генерируем уникальное имя для платформы
+                        platform_type = cell
+                        platform_name = f"{platform_type}_platform_{platform_count}"
+                        platform_count += 1
+
+                        # Добавляем платформу в словарь с её координатами
+                        all_platforms[platform_name] = (world_x, world_y)
 
                     elif cell == '@':  # Игрок
-                        # Фиксированное место спавна игрока
-                        spawn_x = int(screen_width * 0.1)  # Например, 10% от ширины экрана
-                        spawn_y = int(screen_height * 0.8)  # Например, 80% от высоты экрана
-                        player = Hero(spawn_x, spawn_y)
+                        player = Hero(world_x, world_y)
                         all_sprites.add(player)
 
         return map_data
@@ -186,13 +203,16 @@ def load_map_from_file(filename, air_size=(0, 0)):
         print(f"Файл {filename} не найден!")
         sys.exit()
 
+
+# Загружаем карту
 map_file = "map.map"
-map_data = load_map_from_file(map_file, air_size=(-0.09, 0.05))  # Смещение 2% по ширине и 3% по высоте
+map_data = load_map_from_file(map_file)
 
-
+# Вывод платформ после загрузки
+print(f"Всего платформ: {len(all_platforms)}")
 
 # Создаём травяной слой внизу окна
-grass = Grass((0, screen_height - grass_height), grass_image)
+grass = Grass((0, screen_height - grass_height * 0.5), grass_image)
 
 wolf = Wolf((screen_width, screen_height - 50))
 
