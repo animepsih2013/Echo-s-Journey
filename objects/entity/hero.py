@@ -1,11 +1,7 @@
 import pygame
 
-from data_logger import platforms
-
-# Глобальные параметры
-player_speed = 7
-jump_height = 15
-gravity = 1
+from settings import gravity, player_speed, jump_height
+from settings import platforms_sprites
 
 # Класс персонажа
 class Hero(pygame.sprite.Sprite):
@@ -47,8 +43,8 @@ class Hero(pygame.sprite.Sprite):
 
     def handle_collision_x(self):
         # Проверяем столкновения по оси X
-        collided_platforms = pygame.sprite.spritecollide(self, platforms, False)
-        for platform in collided_platforms:
+        collided_platforms_sprites = pygame.sprite.spritecollide(self, platforms_sprites, False)
+        for platform in collided_platforms_sprites:
             if self.velocity_x > 0:  # Движение вправо
                 self.rect.right = platform.rect.left
             elif self.velocity_x < 0:  # Движение влево
@@ -56,8 +52,8 @@ class Hero(pygame.sprite.Sprite):
 
     def handle_collision_y(self):
         # Проверяем столкновения по оси Y
-        collided_platforms = pygame.sprite.spritecollide(self, platforms, False)
-        for platform in collided_platforms:
+        collided_platforms_sprites = pygame.sprite.spritecollide(self, platforms_sprites, False)
+        for platform in collided_platforms_sprites:
             if self.velocity_y > 0:  # Падение вниз
                 self.rect.bottom = platform.rect.top
                 self.velocity_y = 0

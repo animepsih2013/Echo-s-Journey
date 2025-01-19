@@ -1,13 +1,24 @@
 import pygame
 import sys
-import random
+import subprocess
+
+from settings import all_sprites, platforms_sprites
+
+from objects.entity.hero import Hero
+from objects.entity.wolf import Wolf
+
+from objects.stucturies.platforms import Platform
+from objects.stucturies.grass import Grass
+
+from settings import screen_height, screen_width
+def start_game():
+    subprocess.run(['python', 'settings.py'])
 
 # Инициализация Pygame
 pygame.init()
 
-# Получение текущего разрешения экрана
-info = pygame.display.Info()
-screen_width, screen_height = info.current_w, info.current_h
+# Запуск настроек игры
+start_game()
 
 # Создание полноэкранного окна
 screen = pygame.display.set_mode((screen_width, screen_height), pygame.FULLSCREEN)
@@ -21,115 +32,90 @@ background_image = pygame.transform.scale(background_image, (screen_width, scree
 grass_image = pygame.image.load("textures/grass.png")
 grass_width, grass_height = grass_image.get_width(), grass_image.get_height()
 
-# Глобальные параметры
-player_speed = 7
-jump_height = 15
-gravity = 1
+# Словарь для размеров платформ
+platform_sizes = {
+    's': (0.1, 0.02),  # Маленькая платформа (длинна платформы, толщина платформы)
+    'm': (0.2, 0.021),  # Средняя платформа (длинна платформы, толщина платформы)
+    'b': (0.3, 0.02),  # Большая платформа (длинна платформы, толщина платформы)
+}
+
+ver_platform_sizes = {
+    'v': (0.2, 0.02),  # Маленькая платформа (длинна платформы, толщина платформы)
+}
+
+def load_map_from_file(filename):
+    try:
+        with open(filename, 'r') as file:
+            map_data = [line.strip() for line in file]
+
+            # Определяем размеры одной ячейки карты в пикселях
+            cell_width = screen_width / len(map_data[0])  # Ширина одной ячейки
+
+            vertical_spacing = -0.01
+            platform_count = 0  # Счетчик для уникальных имен платформ
+
+            for y, row in enumerate(map_data):
+                for x, cell in enumerate(row):
+                    # Вычисляем координаты верхнего левого угла ячейки
+                    world_x = x * cell_width
+
+                    if cell in platform_sizes:
+                        width_percent, height_percent = platform_sizes[cell]
+                        platform_width = int(screen_width * width_percent)
+                        platform_height = int(screen_height * height_percent)
+
+                        # Добавляем контролируемый отступ между строками
+                        world_y = y * (platform_height + vertical_spacing)
+
+                        platform = Platform(world_x, world_y, platform_width, platform_height)
+                        platforms_sprites.add(platform)
+                        all_sprites.add(platform)
+
+                        # Генерируем уникальное имя для платформы
+                        platform_type = cell
+                        platform_name = f"{platform_type}_platform_{platform_count}"
+                        platform_count += 1
 
 
-# Класс травы (нижней платформы)
-class Grass(pygame.sprite.Sprite):
-    def __init__(self, pos, texture):
-        super().__init__(platforms, all_sprites)
-        self.image = pygame.transform.scale(texture, (screen_width, texture.get_height()))
-        self.rect = self.image.get_rect(topleft=pos)
+                    if cell in ver_platform_sizes:
+                        width_percent, height_percent = ver_platform_sizes[cell]
+                        platform_width = int(screen_width * width_percent)
+                        platform_height = int(screen_height * height_percent)
+
+                        # Добавляем контролируемый отступ между строками
+                        world_y = y * (platform_height + vertical_spacing)
+
+                        ver_platform = Platform(world_x, world_y, platform_height, platform_width)
+                        platforms_sprites.add(ver_platform)
+                        all_sprites.add(ver_platform)
+
+                        # Генерируем уникальное имя для платформы
+                        platform_type = cell
+                        platform_name = f"{platform_type}_platform_{platform_count}"
+                        platform_count += 1
+
+                    elif cell == '@':  # Игрок
+                        player = Hero(world_x, world_y)
+                        all_sprites.add(player)
+
+                    # elif cell == 'w':  # Игрок
+                    #     wolf = Wolf(world_x, world_y, platforms_sprites)
+                    #     all_sprites.add(wolf)
+
+        return map_data
+    except FileNotFoundError:
+        print(f"Файл {filename} не найден!")
+        sys.exit()
 
 
-class Wolf(pygame.sprite.Sprite):
-    def __init__(self, pos):
-        super().__init__(all_sprites)
-        self.image = pygame.Surface((50, 50))
-        self.image.fill(pygame.Color("red"))
-        self.rect = self.image.get_rect(topleft=pos)
-        self.vx = -random.randint(4, 5)
-        self.vy = random.randrange(3, 8)
-        self.y_velocity = 0
-
-    def update(self):
-        self.rect = self.rect.move(self.vx, self.vy)
-        collision = pygame.sprite.spritecollideany(self, platforms)
-        if collision:
-            # Если герой падает вниз и касается платформы
-            if self.rect.bottom <= collision.rect.bottom:
-                self.rect.bottom = collision.rect.top  # Останавливаем персонажа на платформе
-                self.y_velocity = 0
-
-        # Ограничение движения по вертикали (не падаем ниже экрана)
-        if self.rect.bottom > screen_height:
-            self.rect.bottom = screen_height
-            self.y_velocity = 0
-
-
-class Platform(pygame.sprite.Sprite):
-    def __init__(self, pos, size, texture=None):
-        super().__init__(platforms, all_sprites)
-        if texture:
-            self.image = pygame.transform.scale(texture, size)
-        else:
-            self.image = pygame.Surface(size)
-            self.image.fill(pygame.Color("grey"))
-        self.rect = pygame.Rect(pos, size)
-
-
-# Класс персонажа
-class Hero(pygame.sprite.Sprite):
-    def __init__(self, pos):
-        super().__init__(all_sprites)
-        self.image = pygame.Surface((50, 50))
-        self.image.fill(pygame.Color("blue"))
-        self.rect = self.image.get_rect(topleft=pos)
-        self.y_velocity = 0
-        self.is_jumping = False
-
-    def update(self):
-        keys = pygame.key.get_pressed()
-
-        # Горизонтальное движение
-        if keys[pygame.K_a]:
-            self.rect.x -= player_speed
-        if keys[pygame.K_d]:
-            self.rect.x += player_speed
-
-        # Прыжок
-        if not self.is_jumping and keys[pygame.K_SPACE]:
-            self.is_jumping = True
-            self.y_velocity = -jump_height
-
-        # Применение гравитации
-        self.y_velocity += gravity
-        self.rect.y += self.y_velocity
-
-        # Проверка коллизий с платформами
-        collision = pygame.sprite.spritecollideany(self, platforms)
-        if collision:
-            # Если герой падает вниз и касается платформы
-            if self.y_velocity > 0 and self.rect.bottom <= collision.rect.bottom:
-                self.rect.bottom = collision.rect.top  # Останавливаем персонажа на платформе
-                self.y_velocity = 0
-                self.is_jumping = False
-
-        # Ограничение движения по вертикали (не падаем ниже экрана)
-        if self.rect.bottom > screen_height:
-            self.rect.bottom = screen_height
-            self.is_jumping = False
-            self.y_velocity = 0
-
-
-# Группы спрайтов
-all_sprites = pygame.sprite.Group()
-platforms = pygame.sprite.Group()
-
-
-Platform((300, screen_height - 100), (300, 20))  # Серая платформа
-Platform((700, screen_height - 200), (200, 20))  # Серая платформа
-Platform((1000, screen_height - 300), (300, 20))  # Серая платформа
+# Загружаем карту
+map_file = "map.map"
+map_data = load_map_from_file(map_file)
 
 # Создаём травяной слой внизу окна
-grass = Grass((0, screen_height - grass_height), grass_image)
+grass = Grass((0, screen_height - grass_height * 0.5), grass_image)
 
-wolf = Wolf((screen_width, screen_height - grass_height - 50))
-# Создаём героя
-hero = Hero((150, screen_height - grass_height - 50))
+wolf = Wolf((screen_width, screen_height - 50))
 
 # Главный игровой цикл
 clock = pygame.time.Clock()
