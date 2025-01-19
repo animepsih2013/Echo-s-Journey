@@ -8,11 +8,15 @@ from objects.entity.hero import Hero
 from objects.entity.wolf import Wolf
 
 from objects.stucturies.platforms import Platform
+from objects.stucturies.platforms import Platform_ver
 from objects.stucturies.grass import Grass
 
 from settings import screen_height, screen_width
+
+
 def start_game():
     subprocess.run(['python', 'settings.py'])
+
 
 # Инициализация Pygame
 pygame.init()
@@ -40,8 +44,23 @@ platform_sizes = {
 }
 
 ver_platform_sizes = {
-    'v': (0.2, 0.02),  # Маленькая платформа (длинна платформы, толщина платформы)
+    'v': (0.06, 0.02),  # Маленькая платформа (длинна платформы, толщина платформы)
 }
+
+
+class Camera:
+    def __init__(self):
+        self.dx = 0
+        self.dy = 0
+
+    def apply(self, obj):
+        obj.rect.x = obj.pos[0] + self.dx
+        obj.rect.y = obj.pos[1] + self.dy
+
+    def update(self, target):
+        self.dx = -(target.rect.x + target.rect.w // 2 - screen_width // 2)
+        self.dy = -(target.rect.y + target.rect.h // 2 - screen_height // 2)
+
 
 def load_map_from_file(filename):
     try:
@@ -76,7 +95,6 @@ def load_map_from_file(filename):
                         platform_name = f"{platform_type}_platform_{platform_count}"
                         platform_count += 1
 
-
                     if cell in ver_platform_sizes:
                         width_percent, height_percent = ver_platform_sizes[cell]
                         platform_width = int(screen_width * width_percent)
@@ -85,7 +103,7 @@ def load_map_from_file(filename):
                         # Добавляем контролируемый отступ между строками
                         world_y = y * (platform_height + vertical_spacing)
 
-                        ver_platform = Platform(world_x, world_y, platform_height, platform_width)
+                        ver_platform = Platform_ver(world_x, world_y, platform_height, platform_width)
                         platforms_sprites.add(ver_platform)
                         all_sprites.add(ver_platform)
 
@@ -99,7 +117,7 @@ def load_map_from_file(filename):
                         all_sprites.add(player)
 
                     # elif cell == 'w':  # Игрок
-                    #     wolf = Wolf(world_x, world_y, platforms_sprites)
+                    #     wolf = Wolf(world_x, world_y)
                     #     all_sprites.add(wolf)
 
         return map_data
@@ -120,7 +138,10 @@ wolf = Wolf((screen_width, screen_height - 50))
 # Главный игровой цикл
 clock = pygame.time.Clock()
 running = True
+camera = Camera()
 while running:
+    # for sprite in all_sprites:
+    #     camera.apply(sprite)
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             pygame.quit()
@@ -134,4 +155,4 @@ while running:
     all_sprites.draw(screen)
 
     pygame.display.flip()
-    clock.tick(60)
+    clock.tick(70)
