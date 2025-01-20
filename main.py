@@ -54,8 +54,8 @@ class Camera:
         self.dy = 0
 
     def apply(self, obj):
-        obj.rect.x = obj.pos[0] + self.dx
-        obj.rect.y = obj.pos[1] + self.dy
+        obj.rect.x = obj.abs_pos[0] + self.dx
+        obj.rect.y = obj.abs_pos[1] + self.dy
 
     def update(self, target):
         self.dx = -(target.rect.x + target.rect.w // 2 - screen_width // 2)
@@ -139,9 +139,9 @@ wolf = Wolf((screen_width, screen_height - 50))
 clock = pygame.time.Clock()
 running = True
 camera = Camera()
+for sprite in all_sprites:
+    camera.update(sprite)
 while running:
-    # for sprite in all_sprites:
-    #     camera.apply(sprite)
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             pygame.quit()
