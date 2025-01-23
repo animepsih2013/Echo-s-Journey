@@ -98,9 +98,9 @@ def load_map_from_file(filename):
                         player = Hero(world_x, world_y)
                         all_sprites.add(player)
 
-                    # elif cell == 'w':  # Игрок
-                    #     wolf = Wolf(world_x, world_y)
-                    #     all_sprites.add(wolf)
+                    elif cell == 'w':  # Игрок
+                        wolf = Wolf(world_x, world_y)
+                        all_sprites.add(wolf)
 
         return map_data, player
     except FileNotFoundError:
@@ -115,7 +115,6 @@ map_data = load_map_from_file(map_file)
 # Создаём травяной слой внизу окна
 grass = Grass((0, screen_height - grass_height * 0.5), grass_image)
 
-wolf = Wolf((screen_width, screen_height - 50))
 
 class Camera:
     def __init__(self):
