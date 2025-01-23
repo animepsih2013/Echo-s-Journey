@@ -48,20 +48,6 @@ ver_platform_sizes = {
 }
 
 
-class Camera:
-    def __init__(self):
-        self.dx = 0
-        self.dy = 0
-
-    def apply(self, obj):
-        obj.rect.x = obj.abs_pos[0] + self.dx
-        obj.rect.y = obj.abs_pos[1] + self.dy
-
-    def update(self, target):
-        self.dx = -(target.rect.x + target.rect.w // 2 - screen_width // 2)
-        self.dy = -(target.rect.y + target.rect.h // 2 - screen_height // 2)
-
-
 def load_map_from_file(filename):
     try:
         with open(filename, 'r') as file:
@@ -104,15 +90,11 @@ def load_map_from_file(filename):
                         world_y = y * (platform_height + vertical_spacing)
 
                         ver_platform = Platform_ver(world_x, world_y, platform_height, platform_width)
-                        platforms_sprites.add(ver_platform)
+                        # platforms_sprites.add(ver_platform)
                         all_sprites.add(ver_platform)
 
-                        # Генерируем уникальное имя для платформы
-                        platform_type = cell
-                        platform_name = f"{platform_type}_platform_{platform_count}"
-                        platform_count += 1
-
                     elif cell == '@':  # Игрок
+                        global player
                         player = Hero(world_x, world_y)
                         all_sprites.add(player)
 
@@ -120,7 +102,7 @@ def load_map_from_file(filename):
                     #     wolf = Wolf(world_x, world_y)
                     #     all_sprites.add(wolf)
 
-        return map_data
+        return map_data, player
     except FileNotFoundError:
         print(f"Файл {filename} не найден!")
         sys.exit()
@@ -135,20 +117,45 @@ grass = Grass((0, screen_height - grass_height * 0.5), grass_image)
 
 wolf = Wolf((screen_width, screen_height - 50))
 
+class Camera:
+    def __init__(self):
+        self.dx = 0  # Горизонтальное смещение
+
+    def apply(self, obj):
+        obj.rect.x += self.dx
+
+    def update(self, target):
+        # Центр камеры на персонаже (игроке)
+        self.dx = -(target.rect.centerx - screen_width // 2)
+        self.dy = -(target.rect.centery - screen_height // 2)
+
+
 # Главный игровой цикл
 clock = pygame.time.Clock()
 running = True
 camera = Camera()
-for sprite in all_sprites:
-    camera.update(sprite)
+
+# В игровом цикле
 while running:
+    keys = pygame.key.get_pressed()
+    if keys[pygame.K_ESCAPE]:  # Закрываем игру нажатием escape
+        pygame.quit()
+        sys.exit()
+
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             pygame.quit()
             sys.exit()
 
+    # Обновляем камеру относительно игрока
+    camera.update(player)
+
     # Отображение изображения на экране
     screen.blit(background_image, (0, 0))  # Рисуем фон
+
+    # Применяем камеру к остальным объектам
+    for sprite in all_sprites:
+        camera.apply(sprite)
 
     # Обновляем и рисуем все спрайты
     all_sprites.update()
@@ -156,3 +163,4 @@ while running:
 
     pygame.display.flip()
     clock.tick(70)
+
