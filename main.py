@@ -9,7 +9,7 @@ from objects.entity.wolf import Wolf
 
 from objects.stucturies.platforms import Platform
 from objects.stucturies.platforms import Platform_ver
-from objects.stucturies.grass import Grass
+from objects.stucturies.grass import Ground
 
 from settings import screen_height, screen_width
 
@@ -33,8 +33,7 @@ background_image = pygame.image.load("textures/forest_background.png")
 background_image = pygame.transform.scale(background_image, (screen_width, screen_height))  # Масштабируем фон под экран
 
 # Загрузка текстуры травы
-grass_image = pygame.image.load("textures/grass.png")
-grass_width, grass_height = grass_image.get_width(), grass_image.get_height()
+ground_image = pygame.image.load("textures/ground.png")
 
 # Словарь для размеров платформ
 platform_sizes = {
@@ -51,6 +50,8 @@ ver_platform_sizes = {
 def load_map_from_file(filename):
     try:
         with open(filename, 'r') as file:
+            global cell_width
+
             map_data = [line.strip() for line in file]
 
             # Определяем размеры одной ячейки карты в пикселях
@@ -63,6 +64,10 @@ def load_map_from_file(filename):
                 for x, cell in enumerate(row):
                     # Вычисляем координаты верхнего левого угла ячейки
                     world_x = x * cell_width
+
+                    if cell == 'g':
+                        ground = Ground((world_x, world_y), ground_image)
+                        all_sprites.add(ground)
 
                     if cell in platform_sizes:
                         width_percent, height_percent = platform_sizes[cell]
@@ -98,35 +103,33 @@ def load_map_from_file(filename):
                         player = Hero(world_x, world_y)
                         all_sprites.add(player)
 
-                    elif cell == 'w':  # Игрок
+                    elif cell == 'w':  # Волк
                         wolf = Wolf(world_x, world_y)
                         all_sprites.add(wolf)
 
-        return map_data, player
+        return map_data, player, cell_width
     except FileNotFoundError:
         print(f"Файл {filename} не найден!")
         sys.exit()
 
 
 # Загружаем карту
-map_file = "map.map"
+map_file = "LvL1.map"
 map_data = load_map_from_file(map_file)
-
-# Создаём травяной слой внизу окна
-grass = Grass((0, screen_height - grass_height * 0.5), grass_image)
 
 
 class Camera:
     def __init__(self):
         self.dx = 0  # Горизонтальное смещение
+        self.dy = 0  # Вертикальное смещение
 
     def apply(self, obj):
         obj.rect.x += self.dx
 
+
     def update(self, target):
-        # Центр камеры на персонаже (игроке)
         self.dx = -(target.rect.centerx - screen_width // 2)
-        self.dy = -(target.rect.centery - screen_height // 2)
+
 
 
 # Главный игровой цикл
@@ -134,7 +137,7 @@ clock = pygame.time.Clock()
 running = True
 camera = Camera()
 
-# В игровом цикле
+# Главный игровой цикл
 while running:
     keys = pygame.key.get_pressed()
     if keys[pygame.K_ESCAPE]:  # Закрываем игру нажатием escape
@@ -152,7 +155,7 @@ while running:
     # Отображение изображения на экране
     screen.blit(background_image, (0, 0))  # Рисуем фон
 
-    # Применяем камеру к остальным объектам
+    # Применяем камеру ко всем спрайтам
     for sprite in all_sprites:
         camera.apply(sprite)
 
@@ -162,4 +165,3 @@ while running:
 
     pygame.display.flip()
     clock.tick(70)
-
