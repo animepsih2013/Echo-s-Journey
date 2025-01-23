@@ -6,6 +6,7 @@ from settings import screen_height, screen_width
 
 from objects.entity.hero import Hero
 from objects.entity.wolf import Wolf
+from objects.entity.owl import Owl
 
 from objects.stucturies.platforms import Platform
 from objects.stucturies.platforms import Platform_ver
@@ -85,6 +86,10 @@ def load_map_from_file(filename):
                     elif cell == 'w':  # Волк
                         wolf = Wolf(world_x, world_y)
                         all_sprites.add(wolf)
+
+                    elif cell == 'o':  # Волк
+                        owl = Owl(world_x, world_y)
+                        all_sprites.add(owl)
 
         return map_data, player
     except FileNotFoundError:

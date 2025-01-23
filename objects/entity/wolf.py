@@ -3,8 +3,8 @@ from settings import gravity
 from settings import all_sprites
 from settings import platforms_sprites
 
-
 wolf_speed = 5
+
 class Wolf(pygame.sprite.Sprite):
     def __init__(self, x, y):
         super().__init__(all_sprites)
