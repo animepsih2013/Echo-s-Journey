@@ -133,7 +133,6 @@ map_data = load_map_from_file(map_file)
 # Создаём травяной слой внизу окна
 grass = Grass((0, screen_height - grass_height * 0.5), grass_image)
 
-# wolf = Wolf(screen_width, screen_height - 50)
 
 # Главный игровой цикл
 clock = pygame.time.Clock()

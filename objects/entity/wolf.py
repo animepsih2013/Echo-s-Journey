@@ -20,7 +20,6 @@ class Wolf(pygame.sprite.Sprite):
             self.velocity_y = 10
         self.velocity_x = -wolf_speed
         self.rect.x += self.velocity_x
-        # self.handle_collision_x()  # Проверка столкновений по X
 
         self.rect.y += self.velocity_y
         self.handle_collision_y()
@@ -35,12 +34,3 @@ class Wolf(pygame.sprite.Sprite):
             elif self.velocity_y < 0:  # Прыжок вверх
                 self.rect.top = platform.rect.bottom
                 self.velocity_y = 0
-
-    # def handle_collision_x(self):
-    #     # Проверяем столкновения по оси X
-    #     collided_platforms_sprites = pygame.sprite.spritecollide(self, platforms_sprites, False)
-    #     for platform in collided_platforms_sprites:
-    #         if self.velocity_x > 0:  # Движение вправо
-    #             self.rect.right = platform.rect.left
-    #         elif self.velocity_x < 0:  # Движение влево
-    #             self.rect.left = platform.rect.right
