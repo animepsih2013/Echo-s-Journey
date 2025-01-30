@@ -27,7 +27,7 @@ background_image = pygame.image.load("textures/forest_background.png")
 background_image = pygame.transform.scale(background_image, (screen_width, screen_height))  # Масштабируем фон под экран
 
 # Загружаем карту
-map_file = "LvL1.map"
+map_file = "LVL2.map"
 map_data, player = load_map_from_file(map_file)
 
 # Главный игровой цикл
