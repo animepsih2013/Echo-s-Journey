@@ -19,7 +19,7 @@ pygame.init()
 start_game()
 
 # Создание полноэкранного окна
-screen = pygame.display.set_mode((screen_width, screen_height), pygame.FULLSCREEN)
+screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
 pygame.display.set_caption("Echo's Journey")
 
 # Загрузка изображения фона

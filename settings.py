@@ -6,7 +6,7 @@ pygame.init()
 # Глобальные параметры
 player_speed = 7
 jump_height = 20
-gravity = 1
+gravity = 1.1
 
 # Группы спрайтов
 all_sprites = pygame.sprite.Group()
