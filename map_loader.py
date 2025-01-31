@@ -14,21 +14,15 @@ from objects.stucturies.platforms import Platform
 from objects.stucturies.platforms import Platform_ver
 from objects.stucturies.ground import Ground
 
-ground_count = 0  # Счетчик для загрузки рандомных спрайтов земли
-ground_random_textures = []
-cell_width = 64
-cell_height = 64
-
-
 # Текстуры земли
+ground_count = 0
+ground_random_textures = []
 ground_textures = ["textures/ground_1.png", "textures/ground_2.png", "textures/ground_3.png"]
 
 def load_map_from_file(filename):
     try:
         with open(filename, 'r') as file:
             map_data = [line.strip() for line in file]
-
-        player = None  # Указатель на игрока
 
         for y, row in enumerate(map_data):
             for x, cell in enumerate(row):
@@ -46,6 +40,7 @@ def load_map_from_file(filename):
                     platform_width = int(64 * width_percent)
                     platform_height = int(64 * height_percent)
 
+                    print(platform_width, platform_height)
                     platform = Platform(world_x, world_y, platform_width, platform_height)
                     platforms_sprites.add(platform)
                     all_sprites.add(platform)
@@ -64,7 +59,7 @@ def load_map_from_file(filename):
                     all_sprites.add(player)
 
                 elif cell == 'w':  # Волк
-                    wolf_width, wolf_height = entity_sizes.get('w', (64, 64))  # Размеры волка
+                    wolf_width, wolf_height = entity_sizes.get('w', (16, 16))  # Размеры волка
                     wolf = Wolf(world_x, world_y, wolf_width, wolf_height)
                     all_sprites.add(wolf)
 
@@ -83,9 +78,6 @@ def load_map_from_file(filename):
         print(f"Файл {filename} не найден!")
         return None, None
 
-    except Exception as e:
-        print(f"Произошла ошибка: {e}")
-        return None, None
 
 
 class Camera:
