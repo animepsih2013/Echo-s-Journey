@@ -29,19 +29,24 @@ def load_map_from_file(filename):
                 world_x = x * 64  # Базовая сетка, но размеры объектов меняем отдельно
                 world_y = y * 64
 
-                if cell == 'g':  # Земля
+                if cell == '@':  # Игрок
+                    player_width, player_height = entity_sizes.get('@')  # Размеры игрока
+                    player = Hero(world_x, world_y, player_width, player_height)
+                    all_sprites.add(player)
+
+                elif cell == 'g':  # Земля
                     ground_texture = random.choice(ground_textures)
                     ground_width, ground_height = ground_sizes.get(cell, (64, 64))  # Получаем размеры земли
                     ground = Ground((world_x, world_y), pygame.image.load(ground_texture), ground_width, ground_height)
                     all_sprites.add(ground)
 
                 elif cell in platform_sizes:  # Горизонтальные платформы
-                    width_percent, height_percent = platform_sizes[cell]
+                    width_percent, height_percent, platform_texture = platform_sizes[cell]
                     platform_width = int(64 * width_percent)
                     platform_height = int(64 * height_percent)
 
                     print(platform_width, platform_height)
-                    platform = Platform(world_x, world_y, platform_width, platform_height)
+                    platform = Platform(world_x, world_y, platform_width, platform_height, platform_texture)
                     platforms_sprites.add(platform)
                     all_sprites.add(platform)
 
@@ -53,20 +58,18 @@ def load_map_from_file(filename):
                     ver_platform = Platform_ver(world_x, world_y, platform_height, platform_width)
                     all_sprites.add(ver_platform)
 
-                elif cell == '@':  # Игрок
-                    player_width, player_height = entity_sizes.get('@', (64, 64))  # Размеры игрока
-                    player = Hero(world_x, world_y, player_width, player_height)
-                    all_sprites.add(player)
+                elif cell in entity_sizes:
+                    entity_width, entity_height, entity_texture = entity_sizes[cell]
+                    if cell == '@':
+                        player = Hero(world_x, world_y, entity_width, entity_height)
+                        all_sprites.add(player)
+                    elif cell == 'w':
+                        wolf = Wolf(world_x, world_y, entity_width, entity_height)
+                        all_sprites.add(wolf)
+                    elif cell == 'o':
+                        owl = Owl(world_x, world_y, entity_width, entity_height)
+                        all_sprites.add(owl)
 
-                elif cell == 'w':  # Волк
-                    wolf_width, wolf_height = entity_sizes.get('w', (16, 16))  # Размеры волка
-                    wolf = Wolf(world_x, world_y, wolf_width, wolf_height)
-                    all_sprites.add(wolf)
-
-                elif cell == 'o':  # Сова
-                    owl_width, owl_height = entity_sizes.get('o', (64, 64))  # Размеры совы
-                    owl = Owl(world_x, world_y, owl_width, owl_height)
-                    all_sprites.add(owl)
 
         # Проверяем, найден ли игрок
         if player is None:
