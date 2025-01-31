@@ -5,7 +5,7 @@ from settings import platforms_sprites
 
 # Класс персонажа
 class Hero(pygame.sprite.Sprite):
-    def __init__(self, x, y):
+    def __init__(self, x, y, player_width, player_height):
         super().__init__()
         self.image = pygame.Surface((50, 50))
         self.image.fill(pygame.Color('blue'))

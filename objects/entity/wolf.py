@@ -6,7 +6,7 @@ from settings import platforms_sprites
 wolf_speed = 5
 
 class Wolf(pygame.sprite.Sprite):
-    def __init__(self, x, y):
+    def __init__(self, x, y, wolf_width, wolf_height):
         super().__init__(all_sprites)
         self.velocity_x = 0
         self.velocity_y = 0

@@ -19,7 +19,7 @@ pygame.init()
 start_game()
 
 # Создание полноэкранного окна
-screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
+screen = pygame.display.set_mode((screen_width, screen_height), pygame.FULLSCREEN)
 pygame.display.set_caption("Echo's Journey")
 
 # Загрузка изображения фона
@@ -27,8 +27,13 @@ background_image = pygame.image.load("textures/forest_background.png")
 background_image = pygame.transform.scale(background_image, (screen_width, screen_height))  # Масштабируем фон под экран
 
 # Загружаем карту
-map_file = "LVL2.map"
+map_file = "LvL1.map"
 map_data, player = load_map_from_file(map_file)
+
+if map_data is None or player is None:
+    print("Ошибка: Карта не загружена или не найден игрок!")
+    sys.exit()
+
 
 # Главный игровой цикл
 clock = pygame.time.Clock()
