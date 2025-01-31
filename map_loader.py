@@ -37,7 +37,7 @@ def load_map_from_file(filename):
 
                 if cell == 'g':  # Земля
                     ground_texture = random.choice(ground_textures)
-                    ground_width, ground_height = ground_sizes.get(cell, (64, 64))  # Получаем размеры земли
+                    ground_width, ground_height = ground_sizes.get(cell)  # Получаем размеры земли
                     ground = Ground((world_x, world_y), pygame.image.load(ground_texture), ground_width, ground_height)
                     all_sprites.add(ground)
 
@@ -59,17 +59,17 @@ def load_map_from_file(filename):
                     all_sprites.add(ver_platform)
 
                 elif cell == '@':  # Игрок
-                    player_width, player_height = entity_sizes.get('@', (64, 64))  # Размеры игрока
-                    player = Hero(world_x, world_y, player_width, player_height)
+                    player_width, player_height = entity_sizes['@']  # Размеры игрока
+                    player = Hero(world_x, world_y, player_width, player_height, "textures/player.png")
                     all_sprites.add(player)
 
                 elif cell == 'w':  # Волк
-                    wolf_width, wolf_height = entity_sizes.get('w', (64, 64))  # Размеры волка
+                    wolf_width, wolf_height = entity_sizes['w']  # Размеры волка
                     wolf = Wolf(world_x, world_y, wolf_width, wolf_height)
                     all_sprites.add(wolf)
 
                 elif cell == 'o':  # Сова
-                    owl_width, owl_height = entity_sizes.get('o', (64, 64))  # Размеры совы
+                    owl_width, owl_height = entity_sizes['o'] # Размеры совы
                     owl = Owl(world_x, world_y, owl_width, owl_height)
                     all_sprites.add(owl)
 
