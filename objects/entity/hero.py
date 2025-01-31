@@ -1,17 +1,19 @@
 import pygame
+from pygame import Surface
 
 from settings import gravity, player_speed, jump_height
 from settings import platforms_sprites
 
 # Класс персонажа
 class Hero(pygame.sprite.Sprite):
-    def __init__(self, x, y, player_width, player_height, texture=None):
+    def __init__(self, x, y, player_width, player_height, texture):
         super().__init__()
         if texture:
-            self.image = texture
+            self.image = pygame.image.load(texture)
         else:
             self.image = pygame.Surface((50, 50))
-        self.image.fill(pygame.Color('blue'))
+            self.image.fill(pygame.Color('blue'))
+
         self.rect = self.image.get_rect(topleft=(x, y))
         self.velocity_x = 0  # Скорость по оси X
         self.velocity_y = 0  # Скорость по оси Y

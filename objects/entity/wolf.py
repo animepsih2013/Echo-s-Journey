@@ -6,12 +6,15 @@ from settings import platforms_sprites
 wolf_speed = 5
 
 class Wolf(pygame.sprite.Sprite):
-    def __init__(self, x, y, wolf_width, wolf_height):
+    def __init__(self, x, y, wolf_width, wolf_height, texture):
         super().__init__(all_sprites)
+        if texture:
+            self.image = pygame.image.load(texture)
+        else:
+            self.image = pygame.Surface((50, 50))
+            self.image.fill(pygame.Color('red'))
         self.velocity_x = 0
         self.velocity_y = 0
-        self.image = pygame.Surface((50, 50))
-        self.image.fill(pygame.Color("red"))
         self.rect = self.image.get_rect(topleft=(x, y))
 
     def update(self):
