@@ -19,9 +19,10 @@ ground_random_textures = []
 cell_width = 64
 cell_height = 64
 
-
 # Текстуры земли
 ground_textures = ["textures/ground_1.png", "textures/ground_2.png", "textures/ground_3.png"]
+
+# Предполагается, что platform_sizes и другие необходимые словари определены ранее в коде
 
 def load_map_from_file(filename):
     try:
@@ -32,28 +33,31 @@ def load_map_from_file(filename):
 
         for y, row in enumerate(map_data):
             for x, cell in enumerate(row):
-                world_x = x * 64  # Базовая сетка, но размеры объектов меняем отдельно
-                world_y = y * 64
+                world_x = x * cell_width  # Базовая сетка, размеры объектов меняем отдельно
+                world_y = y * cell_height
 
-                if cell == 'g':  # Земля
+                if cell in platform_sizes:  # Горизонтальные платформы
+                    try:
+                        width_percent, height_percent, platform_texture = platform_sizes[cell]
+                        platform_width = int(cell_width * width_percent)
+                        platform_height = int(cell_height * height_percent)
+                        print(platform_width, platform_height)
+                        platform = Platform(world_x, world_y, platform_width, platform_height, platform_texture)
+                        platforms_sprites.add(platform)
+                        all_sprites.add(platform)
+                    except Exception as e:
+                        print(f"Ошибка при создании платформы: {e}")
+
+                elif cell == 'g':  # Земля
                     ground_texture = random.choice(ground_textures)
-                    ground_width, ground_height = ground_sizes.get(cell)  # Получаем размеры земли
+                    ground_width, ground_height = ground_sizes.get(cell, (cell_width, cell_height))  # Получаем размеры земли с значениями по умолчанию
                     ground = Ground((world_x, world_y), pygame.image.load(ground_texture), ground_width, ground_height)
                     all_sprites.add(ground)
 
-                elif cell in platform_sizes:  # Горизонтальные платформы
-                    width_percent, height_percent = platform_sizes[cell]
-                    platform_width = int(64 * width_percent)
-                    platform_height = int(64 * height_percent)
-
-                    platform = Platform(world_x, world_y, platform_width, platform_height)
-                    platforms_sprites.add(platform)
-                    all_sprites.add(platform)
-
                 elif cell in ver_platform_sizes:  # Вертикальные платформы
                     width_percent, height_percent = ver_platform_sizes[cell]
-                    platform_width = int(64 * width_percent)
-                    platform_height = int(64 * height_percent)
+                    platform_width = int(cell_width * width_percent)
+                    platform_height = int(cell_height * height_percent)
 
                     ver_platform = Platform_ver(world_x, world_y, platform_height, platform_width)
                     all_sprites.add(ver_platform)
@@ -69,7 +73,7 @@ def load_map_from_file(filename):
                     all_sprites.add(wolf)
 
                 elif cell == 'o':  # Сова
-                    owl_width, owl_height = entity_sizes['o'] # Размеры совы
+                    owl_width, owl_height = entity_sizes['o']  # Размеры совы
                     owl = Owl(world_x, world_y, owl_width, owl_height)
                     all_sprites.add(owl)
 
@@ -81,10 +85,6 @@ def load_map_from_file(filename):
 
     except FileNotFoundError:
         print(f"Файл {filename} не найден!")
-        return None, None
-
-    except Exception as e:
-        print(f"Произошла ошибка: {e}")
         return None, None
 
 

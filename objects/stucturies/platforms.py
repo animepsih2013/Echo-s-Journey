@@ -6,7 +6,6 @@ class Platform(pygame.sprite.Sprite):
         super().__init__()
         if texture:
             self.image = pygame.image.load(texture)
-            self.image = pygame.transform.scale(self.image, (width, height))
         else:
             self.image = pygame.Surface((width, height))
             self.image.fill(pygame.Color('gray'))
