@@ -3,10 +3,10 @@ from settings import gravity
 from settings import all_sprites
 from settings import platforms_sprites
 
-wolf_speed = 5
+wolf_speed = 22
 
 class Wolf(pygame.sprite.Sprite):
-    def __init__(self, x, y, wolf_width, wolf_height, texture):
+    def __init__(self, x, y, wolf_width, wolf_height, texture, damage):
         super().__init__(all_sprites)
         if texture:
             self.image = pygame.image.load(texture)
@@ -16,6 +16,7 @@ class Wolf(pygame.sprite.Sprite):
         self.velocity_x = 0
         self.velocity_y = 0
         self.rect = self.image.get_rect(topleft=(x, y))
+        self.damage = damage
 
     def update(self):
         self.velocity_y += gravity
@@ -26,6 +27,7 @@ class Wolf(pygame.sprite.Sprite):
 
         self.rect.y += self.velocity_y
         self.handle_collision_y()
+
     def handle_collision_y(self):
         # Проверяем столкновения по оси Y
         collided_platforms_sprites = pygame.sprite.spritecollide(self, platforms_sprites, False)

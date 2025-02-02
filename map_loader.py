@@ -2,7 +2,7 @@ import pygame
 import sys
 import random
 
-from settings import all_sprites, platforms_sprites
+from settings import all_sprites, platforms_sprites, ver_platform_sprites, enemy_sprites
 from settings import screen_height, screen_width
 from settings import platform_sizes, ver_platform_sizes, ground_sizes, entity_sizes
 
@@ -22,6 +22,7 @@ cell_height = 64
 # Текстуры земли
 ground_textures = ["textures/ground_1.png", "textures/ground_2.png", "textures/ground_3.png"]
 
+
 # Предполагается, что platform_sizes и другие необходимые словари определены ранее в коде
 
 def load_map_from_file(filename):
@@ -36,46 +37,53 @@ def load_map_from_file(filename):
                 world_x = x * cell_width  # Базовая сетка, размеры объектов меняем отдельно
                 world_y = y * cell_height
 
-                if cell in platform_sizes:  # Горизонтальные платформы
+                if cell in platform_sizes:  # Вертикальные платформы
                     try:
                         width_percent, height_percent, platform_texture = platform_sizes[cell]
                         platform_width = int(cell_width * width_percent)
                         platform_height = int(cell_height * height_percent)
-                        print(platform_width, platform_height)
                         platform = Platform(world_x, world_y, platform_width, platform_height, platform_texture)
                         platforms_sprites.add(platform)
                         all_sprites.add(platform)
                     except Exception as e:
                         print(f"Ошибка при создании платформы: {e}")
 
+                elif cell in ver_platform_sizes:  # Горизонтальные платформы
+                    try:
+                        width_percent, height_percent, ver_platform_texture = ver_platform_sizes[cell]
+                        ver_platform_width = int(cell_width * width_percent)
+                        ver_platform_height = int(cell_height * height_percent)
+                        ver_platform = Platform_ver(world_x, world_y, ver_platform_height, ver_platform_width, ver_platform_texture)
+                        ver_platform_sprites.add(ver_platform)
+                        all_sprites.add(ver_platform)
+                    except Exception as e:
+                        print(f"Ошибка при создании платформы: {e}")
+
                 elif cell == 'g':  # Земля
                     ground_texture = random.choice(ground_textures)
-                    ground_width, ground_height = ground_sizes.get(cell, (cell_width, cell_height))  # Получаем размеры земли с значениями по умолчанию
+                    ground_width, ground_height = ground_sizes.get(cell, (
+                    cell_width, cell_height))
                     ground = Ground((world_x, world_y), pygame.image.load(ground_texture), ground_width, ground_height)
                     all_sprites.add(ground)
 
-                elif cell in ver_platform_sizes:  # Вертикальные платформы
-                    width_percent, height_percent = ver_platform_sizes[cell]
-                    platform_width = int(cell_width * width_percent)
-                    platform_height = int(cell_height * height_percent)
+                elif cell in entity_sizes:
+                    if cell in entity_sizes:
+                        entity_width, entity_height, entity_texture = entity_sizes[cell]
 
-                    ver_platform = Platform_ver(world_x, world_y, platform_height, platform_width)
-                    all_sprites.add(ver_platform)
+                        # Создание существа в зависимости от типа
+                        if cell == '@':  # Игрок
+                            player = Hero(world_x, world_y, entity_width, entity_height, entity_texture)
+                            all_sprites.add(player)
 
-                elif cell == '@':  # Игрок
-                    player_width, player_height = entity_sizes['@']  # Размеры игрока
-                    player = Hero(world_x, world_y, player_width, player_height, "textures/player.png")
-                    all_sprites.add(player)
+                        elif cell == 'w':  # Волк
+                            wolf = Wolf(world_x, world_y, entity_width, entity_height, entity_texture, damage=200)
+                            all_sprites.add(wolf)
+                            enemy_sprites.add(wolf)
 
-                elif cell == 'w':  # Волк
-                    wolf_width, wolf_height = entity_sizes['w']  # Размеры волка
-                    wolf = Wolf(world_x, world_y, wolf_width, wolf_height)
-                    all_sprites.add(wolf)
-
-                elif cell == 'o':  # Сова
-                    owl_width, owl_height = entity_sizes['o']  # Размеры совы
-                    owl = Owl(world_x, world_y, owl_width, owl_height)
-                    all_sprites.add(owl)
+                        elif cell == 'o':  # Сова
+                            owl = Owl(world_x, world_y, entity_width, entity_height, entity_texture, damage = 150)
+                            all_sprites.add(owl)
+                            enemy_sprites.add(wolf)
 
         # Проверяем, найден ли игрок
         if player is None:

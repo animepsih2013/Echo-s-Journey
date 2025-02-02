@@ -2,11 +2,13 @@ import pygame
 import sys
 import subprocess
 
-from settings import all_sprites, platforms_sprites
+from settings import all_sprites, platforms_sprites, ver_platform_sprites
 
 from settings import screen_height, screen_width
 
 from map_loader import load_map_from_file, Camera
+
+from objects.heart import draw_health
 
 def start_game():
     subprocess.run(['python', 'settings.py'])
@@ -52,6 +54,10 @@ while running:
             pygame.quit()
             sys.exit()
 
+    keys = pygame.key.get_pressed()
+    if keys[pygame.K_y]:  # Нажатие пробела вызывает урон
+        player.take_damage(25)
+
     # Обновляем камеру относительно игрока
     camera.update(player)
 
@@ -65,6 +71,13 @@ while running:
     # Обновляем и рисуем все спрайты
     all_sprites.update()
     all_sprites.draw(screen)
+
+    player.HP()
+
+    # Рисуем здоровье на экране
+    health_hearts = draw_health(player)
+    for heart in health_hearts:
+        screen.blit(heart.image, heart.rect.topleft)
 
     pygame.display.flip()
     clock.tick(70)

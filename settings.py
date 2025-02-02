@@ -1,4 +1,3 @@
-import random
 import pygame
 
 pygame.init()
@@ -7,12 +6,13 @@ pygame.init()
 player_speed = 7
 jump_height = 20
 gravity = 1
-
+INVINCIBLE_TIME = 2000
 
 # Группы спрайтов
 all_sprites = pygame.sprite.Group()
 platforms_sprites = pygame.sprite.Group()
-
+ver_platform_sprites = pygame.sprite.Group()
+enemy_sprites = pygame.sprite.Group()
 
 def main():
     info = pygame.display.Info()
@@ -29,19 +29,19 @@ screen_width, screen_height = main()
 # Словарь для размеров платформ
 platform_sizes = {
     's': (4, 0.3, "textures/s_platform.png"),  # Маленькая платформа (длинна платформы, толщина платформы)
-    'm': (7, 0.3, "textures/m_platform.png"),  # Средняя платформа (длинна платформы, толщина платформы)
+    'm': (6.7, 0.3, "textures/m_platform.png"),  # Средняя платформа (длинна платформы, толщина платформы)
     'b': (9, 0.3, "textures/b_platform.png"),  # Большая платформа (длинна платформы, толщина платформы)
 }
 
 ver_platform_sizes = {
-    'v': (60, 0.3),  # Маленькая платформа (длинна платформы, толщина платформы)
+    'v': (9, 1.1, "textures/ledder.png"),
 }
 ground_sizes = {
     'g': (16, 16)  # Например, земля будет 128x64
 }
 
 entity_sizes = {
-    '@': (100, 100),  # Игрок 48x64
-    'w': (80, 64),  # Волк 80x64
-    'o': (64, 64)   # Сова 64x64
+    '@': (200, 200, "textures/player.png"), # Игрок
+    'w': (80, 64, "textures/wolf.png"), # Волк
+    'o': (64, 64, "textures/fire.png") # Сова
 }
