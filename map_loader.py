@@ -72,7 +72,7 @@ def load_map_from_file(filename):
 
                         # Создание существа в зависимости от типа
                         if cell == '@':  # Игрок
-                            player = Hero(world_x, world_y, entity_width, entity_height, entity_texture)
+                            player = Hero(world_x, world_y, entity_width, entity_height)
                             all_sprites.add(player)
 
                         elif cell == 'w':  # Волк

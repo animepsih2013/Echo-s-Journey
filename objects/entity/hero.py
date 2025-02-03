@@ -1,59 +1,72 @@
 import pygame
 import random
 
-from settings import gravity, player_speed, jump_height, enemy_sprites
+from settings import gravity, player_speed, jump_height, enemy_sprites, all_sprites, fireballs
 from settings import platforms_sprites, ver_platform_sprites
 from objects.entity.wolf import Wolf
 from objects.entity.owl import Owl
-import subprocess
-
+from skills.fireball import Fireball
 
 # Класс персонажа
+import pygame
+
+
 class Hero(pygame.sprite.Sprite):
-    def __init__(self, x, y, player_width, player_height, texture):
+    def __init__(self, x, y, player_width, player_height):
         super().__init__()
-        if texture:
-            self.image = pygame.image.load(texture)
-        else:
-            self.image = pygame.Surface((50, 50))
-            self.image.fill(pygame.Color('blue'))
-        self.x = x
-        self.y = y
+
+        # Загружаем анимации сразу
+        self.echo_animations = {
+            'idle': [
+                pygame.image.load('textures/echo_idle1.png'),
+                pygame.image.load('textures/echo_idle2.png'),
+                pygame.image.load('textures/echo_idle3.png'),
+                pygame.image.load('textures/echo_idle4.png'),
+                pygame.image.load('textures/echo_idle3.png'),
+                pygame.image.load('textures/echo_idle2.png'),
+                pygame.image.load('textures/echo_idle1.png'),
+            ]
+        }
+
+        self.current_animation = "idle"
+        self.frame_index = 0
+        self.animation_speed = 300 # Скорость смены кадров (мс)
+        self.last_update = pygame.time.get_ticks()  # Время последнего обновления кадра
+
+        self.image = self.echo_animations[self.current_animation][self.frame_index]
+
         self.rect = self.image.get_rect(topleft=(x, y))
-        self.velocity_x = 0  # Скорость по оси X
-        self.velocity_y = 0  # Скорость по оси Y
+
+        self.velocity_x = 0
+        self.velocity_y = 0
         self.is_jumping = False
         self.is_hanging = False
+
         self.max_health = 300
         self.health = self.max_health
-        self.invulnerable = False  # Неуязвимость
-        self.invulnerable_time = 1500  # Время неуязвимости в миллисекундах
+
+        self.invulnerable = False
+        self.invulnerable_time = 1500
         self.last_hit_time = 0
 
-    def take_damage(self, amount):
-        if not self.invulnerable:
-            self.health -= amount
-            if self.health < 0:
-                self.health = 0  # Не допускаем отрицательного здоровья
+        self.last_fireball_attack_time = 0
+        self.fireball_cooldown = 2500
 
-            # Отскок при получении урона
-            self.bounce_back(30)  # Вы можете настроить силу отскока здесь
+        self.facing_right = True
 
-            self.invulnerable = True
-            self.last_hit_time = pygame.time.get_ticks()  # Запоминаем время удара
-
-    def bounce_back(self, force):
-        direction = random.choice(["left", "right", "up", "down"])  # Случайное направление
-        if direction == "left":
-            self.rect.x += force  # Отпрыгнуть вправо
-        elif direction == "right":
-            self.rect.x -= force  # Отпрыгнуть влево
-        elif direction == "up":
-            self.rect.y += force  # Отпрыгнуть вниз
-        elif direction == "down":
-            self.rect.y -= force  # Отпрыгнуть вверх
+    def update_animation(self):
+        now = pygame.time.get_ticks()  # Текущее время
+        if now - self.last_update > self.animation_speed:
+            self.last_update = now
+            self.frame_index = (self.frame_index + 1) % len(self.echo_animations[self.current_animation])
+            self.image = self.echo_animations[self.current_animation][self.frame_index]  # Меняем кадр
 
     def update(self):
+        # Атака
+        keys = pygame.key.get_pressed()
+        if keys[pygame.K_f]:  # Если нажата клавиша "F"
+            self.attack(skill_name='fireball')  # Вызываем метод атаки
+
         # Проверка времени неуязвимости
         if self.invulnerable:
             current_time = pygame.time.get_ticks()
@@ -91,6 +104,37 @@ class Hero(pygame.sprite.Sprite):
         if not self.is_hanging:
             self.rect.y += self.velocity_y
             self.handle_collision_y()  # Проверка столкновений по Y
+
+    def attack(self, skill_name):
+        if skill_name == 'fireball':
+            current_time = pygame.time.get_ticks()  # Получаем текущее время в миллисекундах
+            if current_time - self.last_fireball_attack_time >= self.fireball_cooldown:  # Проверяем, прошло ли достаточно времени
+                direction = 1 if self.velocity_x >= 0 else -1  # Определяем направление
+                fireball = Fireball(self.rect.centerx, self.rect.centery, direction)  # Создаем фаербол
+                all_sprites.add(fireball)  # Добавьте фаербол в группу всех спрайтов
+                fireballs.add(fireball)  # Добавьте фаербол в отдельную группу для фаерболов
+                self.last_fireball_attack_time = current_time  # Обновляем время последней атаки
+
+    def bounce_back(self, force):
+        direction = random.choice(["left", "right", "up", "down"])  # Случайное направление
+        if direction == "left":
+            self.rect.x += force  # Отпрыгнуть вправо
+        elif direction == "right":
+            self.rect.x -= force  # Отпрыгнуть влево
+        elif direction == "down":
+            self.rect.y -= force  # Отпрыгнуть вверх
+
+    def take_damage(self, amount):
+        if not self.invulnerable:
+            self.health -= amount
+            if self.health < 0:
+                self.health = 0  # Не допускаем отрицательного здоровья
+
+            # Отскок при получении урона
+            self.bounce_back(30)  # Вы можете настроить силу отскока здесь
+
+            self.invulnerable = True
+            self.last_hit_time = pygame.time.get_ticks()  # Запоминаем время удара
 
     def HP(self):
         enemy_collide = pygame.sprite.spritecollide(self, enemy_sprites, False)

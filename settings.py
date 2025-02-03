@@ -13,6 +13,7 @@ all_sprites = pygame.sprite.Group()
 platforms_sprites = pygame.sprite.Group()
 ver_platform_sprites = pygame.sprite.Group()
 enemy_sprites = pygame.sprite.Group()
+fireballs = pygame.sprite.Group()
 
 def main():
     info = pygame.display.Info()
@@ -25,6 +26,9 @@ def main():
 
 
 screen_width, screen_height = main()
+
+
+
 
 # Словарь для размеров платформ
 platform_sizes = {
@@ -42,7 +46,7 @@ ground_sizes = {
 }
 
 entity_sizes = {
-    '@': (200, 200, "textures/player.png"), # Игрок
+    '@': (200, 200, ""), # Игрок
     'w': (80, 64, "textures/wolf.png"), # Волк
     'o': (64, 64, "textures/owl.png") # Сова
 }

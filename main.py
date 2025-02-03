@@ -2,14 +2,15 @@ import pygame
 import sys
 import subprocess
 
-from settings import all_sprites, platforms_sprites, ver_platform_sprites
+from settings import all_sprites
 
 from settings import screen_height, screen_width
 
 from map_loader import load_map_from_file, Camera
 
-from objects.heart import draw_health
+from skills.heart import draw_health
 
+from objects.entity.hero import Hero
 def start_game():
     subprocess.run(['python', 'settings.py'])
 
@@ -23,6 +24,7 @@ start_game()
 # Создание полноэкранного окна
 screen = pygame.display.set_mode((5000, 5000), pygame.FULLSCREEN)
 pygame.display.set_caption("Echo's Journey")
+
 # Загрузка изображения фона
 background_image = pygame.image.load("textures/forest_background.png")
 background_image = pygame.transform.scale(background_image, (screen_width, screen_height))  # Масштабируем фон под экран
@@ -72,6 +74,7 @@ while running:
     all_sprites.draw(screen)
 
     player.HP()
+    player.update_animation()
 
     # Рисуем здоровье на экране
     health_hearts = draw_health(player)
