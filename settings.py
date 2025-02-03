@@ -35,6 +35,7 @@ platform_sizes = {
 
 ver_platform_sizes = {
     'v': (9, 1.1, "textures/ledder.png"),
+    'n': (4, 1.1, "textures/ledder.png"),
 }
 ground_sizes = {
     'g': (16, 16)  # Например, земля будет 128x64
@@ -43,5 +44,5 @@ ground_sizes = {
 entity_sizes = {
     '@': (200, 200, "textures/player.png"), # Игрок
     'w': (80, 64, "textures/wolf.png"), # Волк
-    'o': (64, 64, "textures/fire.png") # Сова
+    'o': (64, 64, "textures/owl.png") # Сова
 }

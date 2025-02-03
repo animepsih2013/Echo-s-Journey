@@ -23,7 +23,6 @@ start_game()
 # Создание полноэкранного окна
 screen = pygame.display.set_mode((5000, 5000), pygame.FULLSCREEN)
 pygame.display.set_caption("Echo's Journey")
-
 # Загрузка изображения фона
 background_image = pygame.image.load("textures/forest_background.png")
 background_image = pygame.transform.scale(background_image, (screen_width, screen_height))  # Масштабируем фон под экран

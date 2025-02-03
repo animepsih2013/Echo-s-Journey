@@ -83,7 +83,7 @@ def load_map_from_file(filename):
                         elif cell == 'o':  # Сова
                             owl = Owl(world_x, world_y, entity_width, entity_height, entity_texture, damage = 150)
                             all_sprites.add(owl)
-                            enemy_sprites.add(wolf)
+                            enemy_sprites.add(owl)
 
         # Проверяем, найден ли игрок
         if player is None:
