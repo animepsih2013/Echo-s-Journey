@@ -19,8 +19,18 @@ class Hero(pygame.sprite.Sprite):
         self.echo_animations = {
             'idle': [
                 pygame.image.load('textures/echo_idle1.png'),
-                pygame.image.load('textures/echo_idle2.png'),
+                pygame.image.load('textures/echo_idle1.png'),
                 pygame.image.load('textures/echo_idle3.png'),
+                pygame.image.load('textures/echo_idle4.png'),
+                pygame.image.load('textures/echo_idle5.png'),
+                pygame.image.load('textures/echo_idle6.png'),
+                pygame.image.load('textures/echo_idle7.png'),
+                pygame.image.load('textures/echo_idle8.png'),
+                pygame.image.load('textures/echo_idle9.png'),
+                pygame.image.load('textures/echo_idle8.png'),
+                pygame.image.load('textures/echo_idle7.png'),
+                pygame.image.load('textures/echo_idle6.png'),
+                pygame.image.load('textures/echo_idle5.png'),
                 pygame.image.load('textures/echo_idle4.png'),
                 pygame.image.load('textures/echo_idle3.png'),
                 pygame.image.load('textures/echo_idle2.png'),
@@ -30,7 +40,7 @@ class Hero(pygame.sprite.Sprite):
 
         self.current_animation = "idle"
         self.frame_index = 0
-        self.animation_speed = 300 # Скорость смены кадров (мс)
+        self.animation_speed = 75 # Скорость смены кадров (мс)
         self.last_update = pygame.time.get_ticks()  # Время последнего обновления кадра
 
         self.image = self.echo_animations[self.current_animation][self.frame_index]
