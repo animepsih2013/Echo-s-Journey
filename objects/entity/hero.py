@@ -5,6 +5,7 @@ from settings import gravity, player_speed, jump_height, enemy_sprites
 from settings import platforms_sprites, ver_platform_sprites
 from objects.entity.wolf import Wolf
 from objects.entity.owl import Owl
+import subprocess
 
 
 # Класс персонажа
@@ -36,7 +37,7 @@ class Hero(pygame.sprite.Sprite):
                 self.health = 0  # Не допускаем отрицательного здоровья
 
             # Отскок при получении урона
-            self.bounce_back(20)  # Вы можете настроить силу отскока здесь
+            self.bounce_back(30)  # Вы можете настроить силу отскока здесь
 
             self.invulnerable = True
             self.last_hit_time = pygame.time.get_ticks()  # Запоминаем время удара
