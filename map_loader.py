@@ -2,13 +2,14 @@ import pygame
 import sys
 import random
 
-from settings import all_sprites, platforms_sprites, ver_platform_sprites, enemy_sprites
+from settings import all_sprites, platforms_sprites, ver_platform_sprites, enemy_sprites, coins
 from settings import screen_height, screen_width
 from settings import platform_sizes, ver_platform_sizes, ground_sizes, entity_sizes
 
 from objects.entity.hero import Hero
 from objects.entity.wolf import Wolf
 from objects.entity.owl import Owl
+from objects.entity.coins import Coin
 
 from objects.stucturies.platforms import Platform
 from objects.stucturies.platforms import Platform_ver
@@ -53,7 +54,8 @@ def load_map_from_file(filename):
                         width_percent, height_percent, ver_platform_texture = ver_platform_sizes[cell]
                         ver_platform_width = int(cell_width * width_percent)
                         ver_platform_height = int(cell_height * height_percent)
-                        ver_platform = Platform_ver(world_x, world_y, ver_platform_height, ver_platform_width, ver_platform_texture)
+                        ver_platform = Platform_ver(world_x, world_y, ver_platform_height, ver_platform_width,
+                                                    ver_platform_texture)
                         ver_platform_sprites.add(ver_platform)
                         all_sprites.add(ver_platform)
                     except Exception as e:
@@ -62,7 +64,7 @@ def load_map_from_file(filename):
                 elif cell == 'g':  # Земля
                     ground_texture = random.choice(ground_textures)
                     ground_width, ground_height = ground_sizes.get(cell, (
-                    cell_width, cell_height))
+                        cell_width, cell_height))
                     ground = Ground((world_x, world_y), pygame.image.load(ground_texture), ground_width, ground_height)
                     all_sprites.add(ground)
 
@@ -81,9 +83,13 @@ def load_map_from_file(filename):
                             enemy_sprites.add(wolf)
 
                         elif cell == 'o':  # Сова
-                            owl = Owl(world_x, world_y, entity_width, entity_height, entity_texture, damage = 150)
+                            owl = Owl(world_x, world_y, entity_width, entity_height, entity_texture, damage=150)
                             all_sprites.add(owl)
                             enemy_sprites.add(owl)
+
+                        elif cell == 'c':
+                            coin = Coin(world_x, world_y, entity_width, entity_height, entity_texture, damage=0)
+                            coins.add(coin)
 
         # Проверяем, найден ли игрок
         if player is None:

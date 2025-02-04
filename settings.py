@@ -9,6 +9,7 @@ gravity = 1
 INVINCIBLE_TIME = 2000
 
 # Группы спрайтов
+coins = pygame.sprite.Group()
 all_sprites = pygame.sprite.Group()
 platforms_sprites = pygame.sprite.Group()
 ver_platform_sprites = pygame.sprite.Group()
@@ -26,7 +27,6 @@ def main():
 
 
 screen_width, screen_height = main()
-
 
 
 
@@ -48,5 +48,6 @@ ground_sizes = {
 entity_sizes = {
     '@': (200, 200, ""), # Игрок
     'w': (80, 64, "textures/wolf.png"), # Волк
-    'o': (64, 64, "textures/owl.png") # Сова
+    'o': (64, 64, "textures/owl.png"), # Сова
+    'c': (30, 30, ""),
 }

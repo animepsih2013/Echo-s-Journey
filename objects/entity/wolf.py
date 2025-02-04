@@ -2,6 +2,7 @@ import pygame
 from settings import gravity
 from settings import all_sprites
 from settings import platforms_sprites
+from settings import screen_width
 
 wolf_speed = 15
 

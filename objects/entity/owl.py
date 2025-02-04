@@ -1,6 +1,6 @@
 import pygame
 from settings import all_sprites
-from settings import platforms_sprites
+from settings import screen_width
 owl_speed = 10
 class Owl(pygame.sprite.Sprite):
     def __init__(self, x, y, owl_width, owl_height, texture, damage):
