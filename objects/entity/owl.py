@@ -15,6 +15,6 @@ class Owl(pygame.sprite.Sprite):
         self.rect = self.image.get_rect(topleft=(x, y))
         self.damage = damage
 
-    def update(self):
+    def update(self, player):
         self.velocity_x = -owl_speed
         self.rect.x += self.velocity_x

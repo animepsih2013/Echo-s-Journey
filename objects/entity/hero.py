@@ -71,7 +71,7 @@ class Hero(pygame.sprite.Sprite):
             self.frame_index = (self.frame_index + 1) % len(self.echo_animations[self.current_animation])
             self.image = self.echo_animations[self.current_animation][self.frame_index]  # Меняем кадр
 
-    def update(self):
+    def update(self, *args):
         # Атака
         keys = pygame.key.get_pressed()
         if keys[pygame.K_f]:  # Если нажата клавиша "F"

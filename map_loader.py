@@ -88,8 +88,10 @@ def load_map_from_file(filename):
                             enemy_sprites.add(owl)
 
                         elif cell == 'c':
-                            coin = Coin(world_x, world_y, entity_width, entity_height, entity_texture, damage=0)
+                            print(f"Creating Coin at ({world_x}, {world_y}) with texture: {entity_texture}")
+                            coin = Coin(world_x, world_y, entity_width, entity_height, entity_texture)
                             coins.add(coin)
+                            all_sprites.add(coin)
 
         # Проверяем, найден ли игрок
         if player is None:

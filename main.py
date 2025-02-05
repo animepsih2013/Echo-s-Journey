@@ -11,6 +11,7 @@ from settings import screen_height, screen_width
 from map_loader import load_map_from_file, Camera
 
 from skills.heart import draw_health
+from objects.entity.coins import Coin
 
 from objects.entity.hero import Hero
 def start_game():
@@ -63,6 +64,7 @@ while running:
 
     # Обновляем камеру относительно игрока
     camera.update(player)
+
     coins.update(player)
     coins.draw(screen)
 
@@ -74,7 +76,7 @@ while running:
         camera.apply(sprite)
 
     # Обновляем и рисуем все спрайты
-    all_sprites.update()
+    all_sprites.update(player)
     all_sprites.draw(screen)
 
     player.HP()

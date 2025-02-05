@@ -9,3 +9,6 @@ class Ground(pygame.sprite.Sprite):
         super().__init__(platforms_sprites, all_sprites)
         self.image = texture
         self.rect = self.image.get_rect(topleft=pos)
+
+    def none(self, player):
+        pass

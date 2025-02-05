@@ -11,6 +11,8 @@ class Platform(pygame.sprite.Sprite):
             self.image.fill(pygame.Color('gray'))
         self.rect = self.image.get_rect(topleft=(x, y))
 
+    def none(self, player):
+        pass
 
 class Platform_ver(pygame.sprite.Sprite):
     def __init__(self, x, y, width, height, texture=None):
@@ -21,3 +23,6 @@ class Platform_ver(pygame.sprite.Sprite):
             self.image = pygame.Surface((width, height))
             self.image.fill(pygame.Color('red'))
         self.rect = self.image.get_rect(topleft=(x, y))
+
+    def none(self, player):
+        pass

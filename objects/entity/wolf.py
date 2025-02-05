@@ -19,7 +19,7 @@ class Wolf(pygame.sprite.Sprite):
         self.rect = self.image.get_rect(topleft=(x, y))
         self.damage = damage
 
-    def update(self):
+    def update(self, player):
         self.velocity_y += gravity
         if self.velocity_y > 10:  # Ограничиваем максимальную скорость падения
             self.velocity_y = 10
