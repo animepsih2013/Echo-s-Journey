@@ -58,7 +58,7 @@ class Hero(pygame.sprite.Sprite):
         self.last_fireball_attack_time = 0
         self.fireball_cooldown = 2500
 
-        self.facing_right = True
+        self.facing_right = False
 
     def update(self, *args):
         # Атака
@@ -82,10 +82,19 @@ class Hero(pygame.sprite.Sprite):
         keys = pygame.key.get_pressed()
         if keys[pygame.K_a]:  # Движение влево
             self.velocity_x = -player_speed
+            self.facing_right = True  # Персонаж смотрит влево
         elif keys[pygame.K_d]:  # Движение вправо
             self.velocity_x = player_speed
+            self.facing_right = False  # Персонаж смотрит вправо
         else:
             self.velocity_x = 0
+
+        # Переворачиваем изображение, если персонаж двигается в другую сторону
+        if not self.facing_right:
+            self.image = pygame.transform.flip(self.echo_animations[self.current_animation][self.frame_index], True,
+                                               False)
+        else:
+            self.image = self.echo_animations[self.current_animation][self.frame_index]
 
         # Прыжок
         if keys[pygame.K_SPACE] and not self.is_jumping and not self.is_hanging:

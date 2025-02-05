@@ -14,6 +14,8 @@ from objects.stucturies.platforms import Platform
 from objects.stucturies.platforms import Platform_ver
 from objects.stucturies.ground import Ground
 
+from settings import screen_height
+
 ground_count = 0  # Счетчик для загрузки рандомных спрайтов земли
 ground_random_textures = []
 cell_width = 64
@@ -65,7 +67,7 @@ def load_map_from_file(filename):
                     ground_texture = random.choice(ground_textures)
                     ground_width, ground_height = ground_sizes.get(cell, (
                         cell_width, cell_height))
-                    ground = Ground((world_x, world_y), pygame.image.load(ground_texture), ground_width, ground_height)
+                    ground = Ground((world_x, screen_height - 50), pygame.image.load(ground_texture), ground_width, ground_height)
                     all_sprites.add(ground)
 
                 elif cell in entity_sizes:
