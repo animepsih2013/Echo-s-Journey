@@ -3,7 +3,7 @@ import math
 from settings import all_sprites
 
 owl_speed = 3  # Уменьшим скорость для плавного движения
-detection_radius = 200
+detection_radius = 1000
 
 
 class Owl(pygame.sprite.Sprite):
