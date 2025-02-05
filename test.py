@@ -1,36 +1,43 @@
 import pygame
+from pygame.locals import QUIT
 
+# Инициализация Pygame
+pygame.init()
 
-class Coin(pygame.sprite.Sprite):
-    def __init__(self, x, y, coin_width, coin_height, texture=None, damage=0):
-        super().__init__()
-        if texture:
-            try:
-                self.image = pygame.image.load(texture)
-            except pygame.error as e:
-                print(f"Unable to load texture: {texture}. Error: {e}")
-                self.image = pygame.Surface((30, 30))
-                self.image.fill(pygame.Color('red'))
-        else:
-            self.image = pygame.Surface((30, 30))
-            self.image.fill(pygame.Color('red'))
+# Создаем экран
+screen = pygame.display.set_mode((800, 600))
+pygame.display.set_caption("Game")
 
-        self.rect = self.image.get_rect(topleft=(x, y))
+# Настройка шрифта
+font = pygame.font.Font("textures/ofont.ru_Press Start 2P.ttf", 40)
 
-    def update(self, player):
-        if self.rect.colliderect(player.rect):
-            self.kill()  # Удаляем монетку при сборе
+def draw_score(surface, score):
+    # Создаем текстовую поверхность
+    score_text = font.render(f"Score: {score}", True, (255, 255, 255))  # Белый цвет текста
+    # Рисуем текст на переданной поверхности
+    surface.blit(score_text, (10, 10))  # Здесь surface - это объект pygame.Surface
 
+# Переменная для счета
+score = 0
 
-# В основном цикле игры
-coins = pygame.sprite.Group()
+# Главный игровой цикл
+running = True
+while running:
+    for event in pygame.event.get():
+        if event.type == QUIT:
+            running = False
 
-# Пример добавления монетки
-if cell == 'c':
-    coin = Coin(world_x, world_y, entity_width, entity_height, entity_texture)
-    coins.add(coin)
+    # Обновление логики игры здесь...
+    score += 1  # Для примера увеличиваем счет каждую итерацию
 
-# Отрисовка монеток на экране
-screen.fill((0, 0, 0))  # Очистка экрана
-coins.draw(screen)  # Отрисовка монеток
-pygame.display.flip()
+    # Заполнение экрана черным цветом
+    screen.fill((0, 0, 0))
+
+    # Вызов функции для рисования счета
+    draw_score(screen, score)  # Передаем экран как поверхность
+
+    # Обновляем экран
+    pygame.display.flip()
+
+# Завершение Pygame
+pygame.quit()

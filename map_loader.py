@@ -1,15 +1,14 @@
 import pygame
-import sys
 import random
 
 from settings import all_sprites, platforms_sprites, ver_platform_sprites, enemy_sprites, coins
-from settings import screen_height, screen_width
+from settings import screen_width
 from settings import platform_sizes, ver_platform_sizes, ground_sizes, entity_sizes
 
 from objects.entity.hero import Hero
 from objects.entity.wolf import Wolf
 from objects.entity.owl import Owl
-from objects.entity.coins import Coin
+from objects.stucturies.coins import Coin
 
 from objects.stucturies.platforms import Platform
 from objects.stucturies.platforms import Platform_ver
@@ -54,6 +53,7 @@ def load_map_from_file(filename):
                         width_percent, height_percent, ver_platform_texture = ver_platform_sizes[cell]
                         ver_platform_width = int(cell_width * width_percent)
                         ver_platform_height = int(cell_height * height_percent)
+                        print(ver_platform_width, ver_platform_height)
                         ver_platform = Platform_ver(world_x, world_y, ver_platform_height, ver_platform_width,
                                                     ver_platform_texture)
                         ver_platform_sprites.add(ver_platform)

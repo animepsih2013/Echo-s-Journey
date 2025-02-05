@@ -1,15 +1,11 @@
 import pygame
 import random
 
-from settings import gravity, player_speed, jump_height, enemy_sprites, all_sprites, fireballs
-from settings import platforms_sprites, ver_platform_sprites
+from settings import gravity, player_speed, jump_height
+from settings import platforms_sprites, ver_platform_sprites, enemy_sprites, all_sprites, fireballs
 from objects.entity.wolf import Wolf
 from objects.entity.owl import Owl
 from skills.fireball import Fireball
-
-# Класс персонажа
-import pygame
-
 
 class Hero(pygame.sprite.Sprite):
     def __init__(self, x, y, player_width, player_height):
@@ -64,13 +60,6 @@ class Hero(pygame.sprite.Sprite):
 
         self.facing_right = True
 
-    def update_animation(self):
-        now = pygame.time.get_ticks()  # Текущее время
-        if now - self.last_update > self.animation_speed:
-            self.last_update = now
-            self.frame_index = (self.frame_index + 1) % len(self.echo_animations[self.current_animation])
-            self.image = self.echo_animations[self.current_animation][self.frame_index]  # Меняем кадр
-
     def update(self, *args):
         # Атака
         keys = pygame.key.get_pressed()
@@ -124,6 +113,13 @@ class Hero(pygame.sprite.Sprite):
                 all_sprites.add(fireball)  # Добавьте фаербол в группу всех спрайтов
                 fireballs.add(fireball)  # Добавьте фаербол в отдельную группу для фаерболов
                 self.last_fireball_attack_time = current_time  # Обновляем время последней атаки
+
+    def update_animation(self):
+        now = pygame.time.get_ticks()  # Текущее время
+        if now - self.last_update > self.animation_speed:
+            self.last_update = now
+            self.frame_index = (self.frame_index + 1) % len(self.echo_animations[self.current_animation])
+            self.image = self.echo_animations[self.current_animation][self.frame_index]  # Меняем кадр
 
     def bounce_back(self, force):
         direction = random.choice(["left", "right", "up", "down"])  # Случайное направление

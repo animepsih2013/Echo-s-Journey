@@ -6,7 +6,9 @@ pygame.init()
 player_speed = 7
 jump_height = 20
 gravity = 1
-INVINCIBLE_TIME = 2000
+score = 0
+coin_value = 100
+
 
 # Группы спрайтов
 coins = pygame.sprite.Group()
@@ -38,8 +40,9 @@ platform_sizes = {
 }
 
 ver_platform_sizes = {
-    'v': (9, 1.1, "textures/ledder.png"),
-    'n': (4, 1.1, "textures/ledder.png"),
+    'l': (9, 1.1, "textures/big_ladder.png"),
+    'j': (5.2, 1.1, "textures/mid_ladder.png"),
+    'i': (2.6, 1.1, "textures/small_ladder.png"),
 }
 ground_sizes = {
     'g': (16, 16)  # Например, земля будет 128x64

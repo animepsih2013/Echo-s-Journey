@@ -13,7 +13,7 @@ def terminate():
     sys.exit()
 
 screen.blit(fon, (0, 0))
-font = pygame.font.Font(None, 30)
+font = pygame.font.Font("textures/ofont.ru_Press Start 2P.ttf", 40)
 
 button_surface = pygame.Surface((250, 70))
 text = font.render("Никнейм", True, (0, 0, 0))

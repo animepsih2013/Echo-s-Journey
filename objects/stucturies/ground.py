@@ -10,5 +10,5 @@ class Ground(pygame.sprite.Sprite):
         self.image = texture
         self.rect = self.image.get_rect(topleft=pos)
 
-    def none(self, player):
+    def none(self, *args):
         pass

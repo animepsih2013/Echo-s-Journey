@@ -1,8 +1,9 @@
+import args
 import pygame
 import sys
 import subprocess
 
-from settings import coins
+from settings import coins, score
 
 from settings import all_sprites
 
@@ -11,9 +12,9 @@ from settings import screen_height, screen_width
 from map_loader import load_map_from_file, Camera
 
 from skills.heart import draw_health
-from objects.entity.coins import Coin
+from objects.stucturies.coins import draw_score
 
-from objects.entity.hero import Hero
+
 def start_game():
     subprocess.run(['python', 'settings.py'])
 
@@ -58,10 +59,6 @@ while running:
             pygame.quit()
             sys.exit()
 
-    keys = pygame.key.get_pressed()
-    if keys[pygame.K_y]:  # Нажатие пробела вызывает урон
-        player.take_damage(25)
-
     # Обновляем камеру относительно игрока
     camera.update(player)
 
@@ -81,6 +78,8 @@ while running:
 
     player.HP()
     player.update_animation()
+
+    score_counter = draw_score(screen)
 
     # Рисуем здоровье на экране
     health_hearts = draw_health(player)
