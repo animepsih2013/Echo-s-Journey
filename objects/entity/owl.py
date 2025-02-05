@@ -2,8 +2,8 @@ import pygame
 import math
 from settings import all_sprites
 
-owl_speed = 3  # Уменьшим скорость для плавного движения
-detection_radius = 1000
+owl_speed = 4  # Уменьшим скорость для плавного движения
+detection_radius = 800
 
 
 class Owl(pygame.sprite.Sprite):
@@ -64,6 +64,9 @@ class Owl(pygame.sprite.Sprite):
         if distance < detection_radius:
             self.state = 'flying'
             self.target_position = player_position  # Устанавливаем цель
+        else:
+            self.state = 'sitting'
+            self.target_position = None
 
     def update(self, player_position):
         self.update_animation()
