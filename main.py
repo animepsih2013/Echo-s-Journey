@@ -1,4 +1,3 @@
-import args
 import pygame
 import sys
 import subprocess
@@ -26,7 +25,7 @@ pygame.init()
 start_game()
 
 # Создание полноэкранного окна
-screen = pygame.display.set_mode((5000, 5000), pygame.FULLSCREEN)
+screen = pygame.display.set_mode((screen_width, screen_height), pygame.FULLSCREEN)
 pygame.display.set_caption("Echo's Journey")
 
 # Загрузка изображения фона
@@ -35,7 +34,7 @@ background_image = pygame.transform.scale(background_image, (screen_width, scree
 
 # Загружаем карту+
 map_file = "LvL1.map"
-map_data, player = load_map_from_file(map_file)
+map_data, player, owl = load_map_from_file(map_file)
 
 if map_data is None or player is None:
     print("Ошибка: Карта не загружена или не найден игрок!")
@@ -58,6 +57,10 @@ while running:
         if event.type == pygame.QUIT:
             pygame.quit()
             sys.exit()
+
+    player_position = (player.rect.centerx, player.rect.centery)
+    print(player_position[1])
+    owl.update(player)
 
     # Обновляем камеру относительно игрока
     camera.update(player)

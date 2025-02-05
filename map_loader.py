@@ -31,6 +31,7 @@ def load_map_from_file(filename):
             map_data = [line.strip() for line in file]
 
         player = None  # Указатель на игрока
+        owl = None
 
         for y, row in enumerate(map_data):
             for x, cell in enumerate(row):
@@ -53,7 +54,6 @@ def load_map_from_file(filename):
                         width_percent, height_percent, ver_platform_texture = ver_platform_sizes[cell]
                         ver_platform_width = int(cell_width * width_percent)
                         ver_platform_height = int(cell_height * height_percent)
-                        print(ver_platform_width, ver_platform_height)
                         ver_platform = Platform_ver(world_x, world_y, ver_platform_height, ver_platform_width,
                                                     ver_platform_texture)
                         ver_platform_sprites.add(ver_platform)
@@ -88,7 +88,7 @@ def load_map_from_file(filename):
                             enemy_sprites.add(owl)
 
                         elif cell == 'c':
-                            print(f"Creating Coin at ({world_x}, {world_y}) with texture: {entity_texture}")
+                            # print(f"Creating Coin at ({world_x}, {world_y}) with texture: {entity_texture}")
                             coin = Coin(world_x, world_y, entity_width, entity_height, entity_texture)
                             coins.add(coin)
                             all_sprites.add(coin)
@@ -97,7 +97,10 @@ def load_map_from_file(filename):
         if player is None:
             raise ValueError("Ошибка: В файле карты отсутствует символ '@' для игрока!")
 
-        return map_data, player
+        if owl is None:
+            raise ValueError("Ошибка: В файле карты отсутствует символ '@' для игрока!")
+
+        return map_data, player, owl
 
     except FileNotFoundError:
         print(f"Файл {filename} не найден!")
