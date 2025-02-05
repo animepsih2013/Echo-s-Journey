@@ -59,7 +59,6 @@ while running:
             sys.exit()
 
     player_position = (player.rect.centerx, player.rect.centery)
-    print(player_position[1])
     owl.update(player)
 
     # Обновляем камеру относительно игрока
