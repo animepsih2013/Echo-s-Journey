@@ -9,12 +9,12 @@ class Fireball(pygame.sprite.Sprite):
 
         self.fireball_animations = {
             'fly': [
-                pygame.transform.scale(pygame.image.load(f'textures/fireball_{i}.png').convert_alpha(), (50, 50))
+                pygame.transform.scale(pygame.image.load(f'textures/fireball_{i}.png').convert_alpha(), (65, 65))
                 for i in range(1, 5)
             ] * 2,  # Повторяем кадры
             'boom': [
-                pygame.transform.scale(pygame.image.load('textures/boom.png').convert_alpha(), (100, 100))
-                for _ in range(3)
+                pygame.transform.scale(pygame.image.load(f'textures/boom_{i}.png').convert_alpha(), (250, 350))
+                for i in range(1, 12)
             ]
         }
 
@@ -22,6 +22,7 @@ class Fireball(pygame.sprite.Sprite):
         self.frame_index = 0
         self.animation_speed = 90
         self.last_update = pygame.time.get_ticks()
+        self.burn_zone = 350 # Радиус уничтожения врагов
 
         self.velocity_x = 10 * direction
 
@@ -49,16 +50,20 @@ class Fireball(pygame.sprite.Sprite):
         self.current_animation = 'boom'
         self.frame_index = 0
         self.exploding = True  # Устанавливаем флаг, что фаербол взрывается
-        self.update_animation()
+        self.velocity_x = 0  # Останавливаем движение
+
+        # Уничтожаем всех врагов в радиусе взрыва
+        for enemy in enemy_sprites:
+            if abs(self.rect.centerx - enemy.rect.centerx) < self.burn_zone and \
+               abs(self.rect.centery - enemy.rect.centery) < self.burn_zone:
+                enemy.kill()  # Просто удаляем врагов
 
     def update(self, player):
         if not self.exploding:
             self.rect.x += self.velocity_x  # Двигаем фаербол
             enemy_collide = pygame.sprite.spritecollide(self, enemy_sprites, False)
 
-            for enemy in enemy_collide:
-                if isinstance(enemy, (Wolf, Owl)):
-                    self.explode()  # Начинаем взрыв
-                    enemy.kill()
+            if enemy_collide:  # Если фаербол сталкивается с врагами
+                self.explode()  # Начинаем взрыв
 
         self.update_animation()  # Всегда обновляем анимацию

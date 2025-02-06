@@ -117,7 +117,7 @@ class Hero(pygame.sprite.Sprite):
         if skill_name == 'fireball':
             current_time = pygame.time.get_ticks()  # Получаем текущее время в миллисекундах
             if current_time - self.last_fireball_attack_time >= self.fireball_cooldown:  # Проверяем, прошло ли достаточно времени
-                direction = 1 if self.velocity_x >= 0 else -1  # Определяем направление
+                direction = -1 if self.facing_right else +1  # Определяем направление по направлению взгляда
                 fireball = Fireball(self.rect.centerx, self.rect.centery, direction)  # Создаем фаербол
                 all_sprites.add(fireball)  # Добавьте фаербол в группу всех спрайтов
                 fireballs.add(fireball)  # Добавьте фаербол в отдельную группу для фаерболов
