@@ -19,6 +19,8 @@ class Owl(pygame.sprite.Sprite):
             pygame.transform.scale(pygame.image.load('textures/bat_6.png').convert_alpha(), (150, 130))
         ]
 
+        self.bat_reward = 100
+
         self.frame_index = 0
         self.animation_speed = 120
         self.last_update = pygame.time.get_ticks()

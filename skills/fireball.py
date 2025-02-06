@@ -2,6 +2,7 @@ import pygame
 from settings import enemy_sprites, fireballs
 from objects.entity.owl import Owl
 from objects.entity.wolf import Wolf
+from skills.score import get_score
 
 class Fireball(pygame.sprite.Sprite):
     def __init__(self, x, y, direction):
@@ -17,6 +18,7 @@ class Fireball(pygame.sprite.Sprite):
                 for i in range(1, 12)
             ]
         }
+        self.owl_reward = 150
 
         self.current_animation = 'fly'
         self.frame_index = 0
@@ -57,6 +59,7 @@ class Fireball(pygame.sprite.Sprite):
             if abs(self.rect.centerx - enemy.rect.centerx) < self.burn_zone and \
                abs(self.rect.centery - enemy.rect.centery) < self.burn_zone:
                 enemy.kill()  # Просто удаляем врагов
+                get_score(self.owl_reward)
 
     def update(self, player):
         if not self.exploding:

@@ -2,7 +2,8 @@ import pygame
 import sys
 import subprocess
 
-from settings import coins, score
+from settings import coins
+from skills.score import score
 
 from settings import all_sprites
 
@@ -11,7 +12,7 @@ from settings import screen_height, screen_width
 from map_loader import load_map_from_file, Camera
 
 from skills.heart import draw_health
-from objects.stucturies.coins import draw_score
+from skills.score import draw_score
 
 
 def start_game():

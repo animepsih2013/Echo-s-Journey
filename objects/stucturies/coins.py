@@ -1,7 +1,6 @@
 import pygame
-from settings import coin_value, score
-
-font = pygame.font.Font("textures/ofont.ru_Press Start 2P.ttf", 40)
+from skills.score import score
+from skills.score import get_score
 
 class Coin(pygame.sprite.Sprite):
     def __init__(self, x, y, coin_width, coin_height, texture=None):
@@ -23,6 +22,7 @@ class Coin(pygame.sprite.Sprite):
 
         self.image = self.coin_animation[self.frame_index]
         self.rect = self.image.get_rect(topleft=(x, y))
+        self.coin_value = 100
 
     def update_animation(self):
         now = pygame.time.get_ticks()
@@ -32,13 +32,9 @@ class Coin(pygame.sprite.Sprite):
             self.image = self.coin_animation[self.frame_index]
 
     def update(self, player):
-        global score  # Убедитесь, что мы используем глобальную переменную score
         self.update_animation()
         if self.rect.colliderect(player.rect):
             print("Coin collected!")
             self.kill()  # Удаляем монету
-            score += coin_value  # Обновляем счет
+            get_score(self.coin_value)
 
-def draw_score(surface):
-    score_text = font.render(f"Score: {score}", True, (255, 255, 255))  # Белый цвет текста
-    surface.blit(score_text, (10, 10))

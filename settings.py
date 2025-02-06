@@ -6,8 +6,6 @@ pygame.init()
 player_speed = 7
 jump_height = 20
 gravity = 1
-score = 0
-coin_value = 100
 
 
 # Группы спрайтов
