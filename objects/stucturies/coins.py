@@ -34,7 +34,6 @@ class Coin(pygame.sprite.Sprite):
     def update(self, player):
         self.update_animation()
         if self.rect.colliderect(player.rect):
-            print("Coin collected!")
             self.kill()  # Удаляем монету
             get_score(self.coin_value)
 

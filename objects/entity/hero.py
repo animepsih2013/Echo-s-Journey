@@ -154,11 +154,6 @@ class Hero(pygame.sprite.Sprite):
     def HP(self):
         enemy_collide = pygame.sprite.spritecollide(self, enemy_sprites, False)
         for enemy in enemy_collide:
-            if isinstance(enemy, Wolf):  # Проверяем, является ли враг волком
-                self.take_damage(enemy.damage)  # Наносим урон герою
-                print(f'Hero damaged! Current health: {self.health}')  # Для отладки
-
-        for enemy in enemy_collide:
             if isinstance(enemy, Owl):  # Проверяем, является ли враг волком
                 self.take_damage(enemy.damage)  # Наносим урон герою
                 print(f'Hero damaged! Current health: {self.health}')  # Для отладки

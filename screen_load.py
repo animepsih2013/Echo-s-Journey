@@ -8,6 +8,7 @@ screen = pygame.display.set_mode((800, 800))
 clock = pygame.time.Clock()
 
 fon = pygame.transform.scale(pygame.image.load('textures/avt.png'), (800, 800))
+
 def terminate():
     pygame.quit()
     sys.exit()
@@ -16,14 +17,14 @@ screen.blit(fon, (0, 0))
 font = pygame.font.Font(None, 30)
 
 button_surface = pygame.Surface((250, 70))
-text = font.render("Никнейм", True, (0, 0, 0))
+text = font.render("Easy", True, (0, 0, 0))
 text_rect = text.get_rect(
     center=(button_surface.get_width() /2,
             button_surface.get_height()/2))
 button_rect = pygame.Rect(140, 400, 250, 70)
 
 button_surface2 = pygame.Surface((250, 70))
-text2 = font.render("Пароль", True, (0, 0, 0))
+text2 = font.render("Nightmare", True, (0, 0, 0))
 text_rect2 = text2.get_rect(
     center=(button_surface2.get_width() /2,
             button_surface2.get_height()/2))
@@ -32,16 +33,18 @@ button_rect2 = pygame.Rect(400, 400, 250, 70)
 while True:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
-            terminate()
+            pygame.quit()
+            sys.exit()
         if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
             # Вызовите функцию on_mouse_button_down()
             if button_rect.collidepoint(event.pos):
                 print("Button clicked!")
-                subprocess.run(['python', 'main.py'])
+                subprocess.run(['python', 'main.py', 'Easy'])
                 terminate()
+
             if button_rect2.collidepoint(event.pos):
                 print("Button clicked!")
-                subprocess.run(['python', 'main.py'])
+                subprocess.run(['python', 'main.py', 'Nightmare'])
                 terminate()
 
     if button_rect.collidepoint(pygame.mouse.get_pos()):
