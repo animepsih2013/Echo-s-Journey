@@ -33,6 +33,7 @@ pygame.display.set_caption("Echo's Journey")
 background_image = pygame.image.load("textures/forest_background.png")
 background_image = pygame.transform.scale(background_image, (screen_width, screen_height))  # Масштабируем фон под экран
 
+
 if len(sys.argv) > 1:
     argument = sys.argv[1]  # Первый аргумент после имени скрипта
     if argument == 'Easy':

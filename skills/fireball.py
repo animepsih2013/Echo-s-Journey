@@ -1,8 +1,6 @@
 import pygame
 from settings import enemy_sprites, fireballs
-from objects.entity.owl import Owl
-from objects.entity.wolf import Wolf
-from main import get_score
+from skills.score import get_score
 
 class Fireball(pygame.sprite.Sprite):
     def __init__(self, x, y, direction):
