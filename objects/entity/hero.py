@@ -1,11 +1,17 @@
 import pygame
 import random
+import sys
 
 from settings import gravity, player_speed, jump_height
 from settings import platforms_sprites, ver_platform_sprites, enemy_sprites, all_sprites, fireballs
 from objects.entity.wolf import Wolf
 from objects.entity.owl import Owl
 from skills.fireball import Fireball
+from settings import screen_height, screen_width
+
+screen = pygame.display.set_mode((screen_width, screen_height), pygame.FULLSCREEN)
+font = pygame.font.Font("textures/ofont.ru_Press Start 2P.ttf", 40)
+game_over = False
 
 class Hero(pygame.sprite.Sprite):
     def __init__(self, x, y, player_width, player_height):
@@ -142,8 +148,8 @@ class Hero(pygame.sprite.Sprite):
     def take_damage(self, amount):
         if not self.invulnerable:
             self.health -= amount
-            if self.health < 0:
-                self.health = 0  # Не допускаем отрицательного здоровья
+            if self.health <= 0:
+                self.lose_screen(screen)
 
             # Отскок при получении урона
             self.bounce_back(30)  # Вы можете настроить силу отскока здесь
@@ -199,3 +205,29 @@ class Hero(pygame.sprite.Sprite):
                 self.rect.top = platform.rect.bottom
                 self.velocity_y = 0
 
+    def lose_screen(self, surface):
+        global game_over
+        game_over = True
+
+        while game_over:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    pygame.quit()
+                    sys.exit()
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_RETURN:  # Нажмите Enter для возврата на главный экран
+                        pygame.quit()
+                        sys.exit()
+
+            surface.fill(('red'))
+            victory_text = pygame.font.Font(None, 74).render("You Lose!", True, (255, 255, 255))
+            time_text = font.render(f"Put the ticket", True, (255, 255, 255))
+            restart_text = font.render("Press Enter to return to main menu", True, (255, 255, 255))
+
+            surface.blit(victory_text, (screen_width // 2 - victory_text.get_width() // 2, screen_height // 2 - 40))
+            surface.blit(time_text, (screen_width // 2 - time_text.get_width() // 2, screen_height // 2 + 10))
+            surface.blit(restart_text, (screen_width // 2 - restart_text.get_width() // 2, screen_height // 2 + 60))
+
+            pygame.display.flip()
+
+        pygame.display.flip()

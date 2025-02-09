@@ -39,7 +39,16 @@ def load_map_from_file(filename):
             for x, cell in enumerate(row):
                 world_x = x * cell_width  # Базовая сетка, размеры объектов меняем отдельно
                 world_y = y * cell_height
-
+                # if world_y != screen_height:
+                #     while True:
+                #         if world_y == screen_height:
+                #             break
+                #         else:
+                #             file = open("Easy.map", 'r+')
+                #             l = len(file.readline())
+                #             string = '.' * l
+                #             file.write(string)
+                #     file.close()
                 if cell in platform_sizes:  # Вертикальные платформы
                     try:
                         width_percent, height_percent, platform_texture = platform_sizes[cell]
@@ -71,44 +80,42 @@ def load_map_from_file(filename):
                     all_sprites.add(ground)
 
                 elif cell in entity_sizes:
-                    entity_width, entity_height, entity_texture = entity_sizes[cell]
+                    if cell in entity_sizes:
+                        entity_width, entity_height, entity_texture = entity_sizes[cell]
 
-                    # Создание существа в зависимости от типа
-                    if cell == '@':  # Игрок
-                        player = Hero(world_x, world_y, entity_width, entity_height)
-                        all_sprites.add(player)
+                        # Создание существа в зависимости от типа
+                        if cell == '@':  # Игрок
+                            player = Hero(world_x, world_y, entity_width, entity_height)
+                            all_sprites.add(player)
 
-                    elif cell == 'w':  # Волк
-                        wolf = Wolf(world_x, world_y, entity_width, entity_height, entity_texture, damage=200)
-                        all_sprites.add(wolf)
-                        enemy_sprites.add(wolf)
+                        elif cell == 'w':  # Волк
+                            wolf = Wolf(world_x, world_y, entity_width, entity_height, entity_texture, damage=200)
+                            all_sprites.add(wolf)
+                            enemy_sprites.add(wolf)
 
-                    elif cell == 'o':  # Сова
-                        owl = Owl(world_x, world_y, entity_width, entity_height, entity_texture, damage=150)
-                        all_sprites.add(owl)
-                        enemy_sprites.add(owl)
+                        elif cell == 'o':  # Сова
+                            owl = Owl(world_x, world_y, entity_width, entity_height, entity_texture, damage=150)
+                            all_sprites.add(owl)
+                            enemy_sprites.add(owl)
 
-                    elif cell == 'c':  # Монета
-                        coin = Coin(world_x, world_y, entity_width, entity_height, entity_texture)
-                        coins.add(coin)
-                        all_sprites.add(coin)
+                        elif cell == 'c':
+                            # print(f"Creating Coin at ({world_x}, {world_y}) with texture: {entity_texture}")
+                            coin = Coin(world_x, world_y, entity_width, entity_height, entity_texture)
+                            coins.add(coin)
+                            all_sprites.add(coin)
 
-        # Проверяем, найден ли игрок и сова
+        # Проверяем, найден ли игрок
         if player is None:
             raise ValueError("Ошибка: В файле карты отсутствует символ '@' для игрока!")
 
         if owl is None:
-            raise ValueError("Ошибка: В файле карты отсутствует символ 'o' для совы!")
+            raise ValueError("Ошибка: В файле карты отсутствует символ '@' для игрока!")
 
         return map_data, player, owl
 
     except FileNotFoundError:
-        print(f"Ошибка: Файл '{filename}' не найден.")
-        raise
-    except Exception as e:
-        print(f"Произошла ошибка: {e}")
-        raise
-
+        print(f"Файл {filename} не найден!")
+        return None, None
 
 
 class Camera:
