@@ -1,6 +1,13 @@
 import pygame
 import subprocess
 import sys
+import os
+import sqlite3 as sq
+from text import Text
+from skills.score import get_total_time
+
+db = sq.connect(os.path.abspath('bd/login.db'))
+cur = db.cursor()
 
 pygame.init()
 FPS = 50
@@ -8,6 +15,23 @@ screen = pygame.display.set_mode((800, 800))
 clock = pygame.time.Clock()
 
 fon = pygame.transform.scale(pygame.image.load('textures/avt.png'), (800, 800))
+comments = pygame.Surface((1920, 1080))
+
+
+search = "SELECT record FROM records"
+answer = cur.execute(search).fetchall()
+db.commit()
+if time < answer[0][0]:
+    delet = cur.execute('DELETE * FROM records').fetchall()
+    db.commit()
+    put = '''INSERT INTO records(record)
+                                    VALUES(?)'''
+    cur.execute(put, time)
+    db.commit()
+search = "SELECT record FROM records"
+answer = cur.execute(search).fetchall()
+db.commit()
+
 
 def terminate():
     pygame.quit()
@@ -38,12 +62,10 @@ while True:
         if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
             # Вызовите функцию on_mouse_button_down()
             if button_rect.collidepoint(event.pos):
-                print("Button clicked!")
                 subprocess.run(['python', 'main.py', 'Easy'])
                 terminate()
 
             if button_rect2.collidepoint(event.pos):
-                print("Button clicked!")
                 subprocess.run(['python', 'main.py', 'Nightmare'])
                 terminate()
 
@@ -53,7 +75,7 @@ while True:
         pygame.draw.rect(button_surface, (0, 0, 0), (0, 0, 250, 70))
         pygame.draw.rect(button_surface, (255, 255, 255), (1, 1, 248, 68))
         pygame.draw.rect(button_surface, (0, 0, 0), (1, 1, 248, 1), 2)
-        pygame.draw.rect(button_surface, (0, 100, 0), (1, 68, 248, 10), 2)
+        pygame.draw.rect(button_surface, (0, 100, 0), (1,   68, 248, 10), 2)
 
     if button_rect2.collidepoint(pygame.mouse.get_pos()):
         pygame.draw.rect(button_surface2, (127, 255, 212), (1, 1, 248, 68))
@@ -66,6 +88,7 @@ while True:
         # Показать текст кнопки
     button_surface.blit(text, text_rect)
     button_surface2.blit(text2, text_rect2)
+    Text(font_size=40).render(screen, f'Рекорд: {answer[0][0]}', (300, 400))
 
     # Нарисуйте кнопку на экране
     screen.blit(button_surface, (button_rect.x, button_rect.y))
