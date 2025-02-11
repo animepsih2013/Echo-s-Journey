@@ -43,19 +43,13 @@ button_rect2 = pygame.Rect(400, 400, 250, 70)
 
 answer = cur.execute('''SELECT * FROM records''').fetchall()
 db.commit()
-if float(answer[1][0]) <= float(answer[0][0]):
-    a = str(answer[0][0])
-    delet = cur.execute('DELETE FROM records WHERE record == ?', [a]).fetchall()
-    db.commit()
-    # put = '''INSERT INTO records(record)
-    #                                 VALUES(?)'''
-    # a = get_total_time()
-    # cur.execute(put, a, ).fetchall()
-    # db.commit()
-search = "SELECT record FROM records"
-answer = cur.execute(search).fetchall()
-db.commit()
-Text(font_size=40).render(screen, f'Рекорд: {answer[0][0]}', (350, 350))
+mi = min(answer)
+print(mi[0])
+#
+# search = "SELECT record FROM records"
+# answer = cur.execute(search).fetchall()
+# db.commit()
+Text(font_size=40).render(screen, f'Рекорд: {mi[0]}', (350, 350))
 
 while True:
 
@@ -70,6 +64,7 @@ while True:
 
             if button_rect2.collidepoint(event.pos):
                 subprocess.run(['python', 'main.py', 'Nightmare'])
+
 
     if button_rect.collidepoint(pygame.mouse.get_pos()):
         pygame.draw.rect(button_surface, (127, 255, 212), (1, 1, 248, 68))
