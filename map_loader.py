@@ -76,7 +76,7 @@ def load_map_from_file(filename):
                     ground_texture = random.choice(ground_textures)
                     ground_width, ground_height = ground_sizes.get(cell, (
                         cell_width, cell_height))
-                    ground = Ground((world_x, screen_height - 50), pygame.image.load(ground_texture), ground_width, ground_height)
+                    ground = Ground((world_x, world_y), pygame.image.load(ground_texture), ground_width, ground_height)
                     all_sprites.add(ground)
 
                 elif cell in entity_sizes:

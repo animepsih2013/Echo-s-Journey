@@ -1,15 +1,19 @@
 import pygame
 import sys
-import subprocess
+import sqlite3 as sq
+import os
 from settings import screen_height, screen_width
 # Инициализация переменных
-
+db = sq.connect(os.path.abspath('bd/login.db'))
+cur = db.cursor()
 screen = pygame.display.set_mode((screen_width, screen_height), pygame.FULLSCREEN)
 
 font = pygame.font.Font("textures/ofont.ru_Press Start 2P.ttf", 40)
 score = 0
 start_time = 0
 game_over = False
+total = 0
+
 
 def terminate():
     sys.exit()
@@ -42,8 +46,15 @@ def draw_score(surface):
 
 def display_victory_screen(surface):
     global game_over
+    global total
     game_over = True
     total_time = get_total_time()
+    total = total_time
+    print(total, type(total))
+    put = '''INSERT INTO records(record)
+                                        VALUES(?)'''
+    cur.execute(put, [str(total)]).fetchall()
+    db.commit()
 
     while game_over:
         for event in pygame.event.get():
@@ -63,7 +74,6 @@ def display_victory_screen(surface):
         surface.blit(victory_text, (screen_width // 2 - victory_text.get_width() // 2, screen_height // 2 - 40))
         surface.blit(time_text, (screen_width // 2 - time_text.get_width() // 2, screen_height // 2 + 10))
         surface.blit(restart_text, (screen_width // 2 - restart_text.get_width() // 2, screen_height // 2 + 60))
-
         pygame.display.flip()
 
 

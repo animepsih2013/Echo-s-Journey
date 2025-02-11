@@ -18,20 +18,6 @@ fon = pygame.transform.scale(pygame.image.load('textures/avt.png'), (800, 800))
 comments = pygame.Surface((1920, 1080))
 
 
-search = "SELECT record FROM records"
-answer = cur.execute(search).fetchall()
-db.commit()
-if time < answer[0][0]:
-    delet = cur.execute('DELETE * FROM records').fetchall()
-    db.commit()
-    put = '''INSERT INTO records(record)
-                                    VALUES(?)'''
-    cur.execute(put, time)
-    db.commit()
-search = "SELECT record FROM records"
-answer = cur.execute(search).fetchall()
-db.commit()
-
 
 def terminate():
     pygame.quit()
@@ -54,7 +40,25 @@ text_rect2 = text2.get_rect(
             button_surface2.get_height()/2))
 button_rect2 = pygame.Rect(400, 400, 250, 70)
 
+
+answer = cur.execute('''SELECT * FROM records''').fetchall()
+db.commit()
+if float(answer[1][0]) <= float(answer[0][0]):
+    a = str(answer[0][0])
+    delet = cur.execute('DELETE FROM records WHERE record == ?', [a]).fetchall()
+    db.commit()
+    # put = '''INSERT INTO records(record)
+    #                                 VALUES(?)'''
+    # a = get_total_time()
+    # cur.execute(put, a, ).fetchall()
+    # db.commit()
+search = "SELECT record FROM records"
+answer = cur.execute(search).fetchall()
+db.commit()
+Text(font_size=40).render(screen, f'Рекорд: {answer[0][0]}', (350, 350))
+
 while True:
+
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             pygame.quit()
@@ -63,11 +67,9 @@ while True:
             # Вызовите функцию on_mouse_button_down()
             if button_rect.collidepoint(event.pos):
                 subprocess.run(['python', 'main.py', 'Easy'])
-                terminate()
 
             if button_rect2.collidepoint(event.pos):
                 subprocess.run(['python', 'main.py', 'Nightmare'])
-                terminate()
 
     if button_rect.collidepoint(pygame.mouse.get_pos()):
         pygame.draw.rect(button_surface, (127, 255, 212), (1, 1, 248, 68))
