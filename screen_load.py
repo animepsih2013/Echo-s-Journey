@@ -44,11 +44,6 @@ button_rect2 = pygame.Rect(400, 400, 250, 70)
 answer = cur.execute('''SELECT * FROM records''').fetchall()
 db.commit()
 mi = min(answer)
-print(mi[0])
-#
-# search = "SELECT record FROM records"
-# answer = cur.execute(search).fetchall()
-# db.commit()
 Text(font_size=40).render(screen, f'Рекорд: {mi[0]}', (350, 350))
 
 while True:
@@ -61,9 +56,11 @@ while True:
             # Вызовите функцию on_mouse_button_down()
             if button_rect.collidepoint(event.pos):
                 subprocess.run(['python', 'main.py', 'Easy'])
+                terminate()
 
             if button_rect2.collidepoint(event.pos):
                 subprocess.run(['python', 'main.py', 'Nightmare'])
+                terminate()
 
 
     if button_rect.collidepoint(pygame.mouse.get_pos()):

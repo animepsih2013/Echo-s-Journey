@@ -3,6 +3,7 @@ import sys
 import sqlite3 as sq
 import os
 from settings import screen_height, screen_width
+import subprocess
 # Инициализация переменных
 db = sq.connect(os.path.abspath('bd/login.db'))
 cur = db.cursor()
