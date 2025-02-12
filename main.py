@@ -33,13 +33,19 @@ pygame.display.set_caption("Echo's Journey")
 background_image = pygame.image.load("textures/forest_background.png")
 background_image = pygame.transform.scale(background_image, (screen_width, screen_height))  # Масштабируем фон под экран
 
+def music():
+    pygame.mixer.music.load('sounds/1-03_-subwoofer-lullaby.mp3')
+    pygame.mixer.music.play(-1)
+
 
 if len(sys.argv) > 1:
     argument = sys.argv[1]  # Первый аргумент после имени скрипта
     if argument == 'Easy':
         map_data = 'Easy.map'
+        music()
     else:
         map_data = 'Nightmare.map'
+        music()
     # Теперь передаем правильное имя файла в функцию
     map_data, player, owl = load_map_from_file(map_data)
     print(f"Переданный аргумент: {argument}")
@@ -51,6 +57,10 @@ else:
 clock = pygame.time.Clock()
 running = True
 camera = Camera()
+
+def music():
+    pygame.mixer.music.load('sounds/1-03_-subwoofer-lullaby.mp3')
+    pygame.mixer.music.play(-1)
 
 # Главный игровой цикл
 while running:

@@ -14,8 +14,6 @@ from objects.stucturies.platforms import Platform
 from objects.stucturies.platforms import Platform_ver
 from objects.stucturies.ground import Ground
 
-from settings import screen_height
-
 ground_count = 0  # Счетчик для загрузки рандомных спрайтов земли
 ground_random_textures = []
 cell_width = 64
@@ -24,8 +22,6 @@ cell_height = 64
 # Текстуры земли
 ground_textures = ["textures/ground_1.png", "textures/ground_2.png", "textures/ground_3.png"]
 
-
-# Предполагается, что platform_sizes и другие необходимые словари определены ранее в коде
 
 def load_map_from_file(filename):
     try:
@@ -39,16 +35,7 @@ def load_map_from_file(filename):
             for x, cell in enumerate(row):
                 world_x = x * cell_width  # Базовая сетка, размеры объектов меняем отдельно
                 world_y = y * cell_height
-                # if world_y != screen_height:
-                #     while True:
-                #         if world_y == screen_height:
-                #             break
-                #         else:
-                #             file = open("Easy.map", 'r+')
-                #             l = len(file.readline())
-                #             string = '.' * l
-                #             file.write(string)
-                #     file.close()
+
                 if cell in platform_sizes:  # Вертикальные платформы
                     try:
                         width_percent, height_percent, platform_texture = platform_sizes[cell]
