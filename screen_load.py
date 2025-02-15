@@ -6,7 +6,7 @@ import sqlite3 as sq
 from text import Text
 from skills.score import get_total_time
 
-db = sq.connect(os.path.abspath('bd/login.db'))
+db = sq.connect(os.path.abspath('D:/СЕРЕЖА/Echo-s-Journey/bd/login.db'))
 cur = db.cursor()
 
 pygame.init()

@@ -5,7 +5,7 @@ import os
 from settings import screen_height, screen_width
 import subprocess
 # Инициализация переменных
-db = sq.connect(os.path.abspath('bd/login.db'))
+db = sq.connect(os.path.abspath('D:/СЕРЕЖА/Echo-s-Journey/bd/login.db'))
 cur = db.cursor()
 screen = pygame.display.set_mode((screen_width, screen_height), pygame.FULLSCREEN)
 
@@ -51,7 +51,6 @@ def display_victory_screen(surface):
     game_over = True
     total_time = get_total_time()
     total = total_time
-    print(total, type(total))
     put = '''INSERT INTO records(record)
                                         VALUES(?)'''
     cur.execute(put, [str(total)]).fetchall()
