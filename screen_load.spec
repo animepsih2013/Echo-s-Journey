@@ -5,7 +5,7 @@ a = Analysis(
     ['screen_load.py'],
     pathex=[],
     binaries=[],
-    datas=[('D:/СЕРЕЖА/Echo-s-Journey/bd/login.db', 'bd')],
+    datas=[('bd/login.db', 'bd')],
     hiddenimports=[],
     hookspath=[],
     hooksconfig={},
