@@ -5,7 +5,7 @@ import os
 from settings import screen_height, screen_width
 import subprocess
 # Инициализация переменных
-db = sq.connect(os.path.abspath('D:/СЕРЕЖА/Echo-s-Journey/bd/login.db'))
+db = sq.connect(os.path.abspath('bd/login.db'))
 cur = db.cursor()
 screen = pygame.display.set_mode((screen_width, screen_height), pygame.FULLSCREEN)
 
