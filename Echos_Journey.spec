@@ -5,7 +5,7 @@ a = Analysis(
     ['screen_load.py'],
     pathex=[],
     binaries=[],
-    datas=[('bd/login.db', 'bd')],
+    datas=[],
     hiddenimports=[],
     hookspath=[],
     hooksconfig={},
